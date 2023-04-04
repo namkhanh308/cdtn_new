@@ -1,7 +1,9 @@
 package com.cdtn.kltn.controller;
 
 import com.cdtn.kltn.dto.auth.request.AuthenticationRequest;
+import com.cdtn.kltn.dto.auth.request.RegistrationDTO;
 import com.cdtn.kltn.dto.auth.response.AuthenticationResponse;
+import com.cdtn.kltn.dto.base.BaseResponseData;
 import com.cdtn.kltn.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +23,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody @Valid AuthenticationRequest request) {
         return ResponseEntity.ok(authService.authenticate(request));
+    }
+    @PostMapping("/registerAccount")
+    public BaseResponseData login(@RequestBody @Valid RegistrationDTO request) {
+        return authService.registerClient(request);
     }
 }

@@ -20,9 +20,11 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String fullName;
     private String userName;
     private String password;
+    private Integer statusAccount;
+    private String role;
+
     //    @ManyToMany
 //    @JoinTable(
 //            name = "users_role",
@@ -30,7 +32,6 @@ public class User implements UserDetails {
 //            inverseJoinColumns = @JoinColumn(name = "role_id")
 //    )
 //    private Set<Role> roles = new HashSet<>();
-    private String role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
