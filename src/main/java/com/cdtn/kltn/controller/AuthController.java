@@ -26,6 +26,6 @@ public class AuthController {
     }
     @PostMapping("/registerAccount")
     public BaseResponseData login(@RequestBody @Valid RegistrationDTO request) {
-        return authService.registerClient(request);
+        return authService.registerUser(request);
     }
 }

@@ -1,22 +1,16 @@
-package com.cdtn.kltn.entity;
+package com.cdtn.kltn.dto.client;
 
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
-@Entity
-@Table(name = "client")
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Builder
-public class Client {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@AllArgsConstructor
+@NoArgsConstructor
+public class RegistrationClientDTO {
     private String codeClient;
-    private Long userId;
     private String fullName;
     private Integer age;
     private String provinceCode;
@@ -27,7 +21,4 @@ public class Client {
     private Integer typeLoan;
     private String money;
     private String passport;
-
-
-
 }
