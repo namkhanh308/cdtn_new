@@ -15,9 +15,15 @@ import lombok.NoArgsConstructor;
 public class RegistrationDTO {
 
     @Email
-    private String username;
+    private String email;
 
     @NotBlank
     private String password;
+
+    @NotBlank
+    private String firstName;
+
+    @NotBlank
+    private String lastName;
 
 }

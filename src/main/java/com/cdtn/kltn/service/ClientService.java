@@ -4,6 +4,7 @@ import com.cdtn.kltn.dto.auth.request.AuthenticationRequest;
 import com.cdtn.kltn.dto.auth.request.RegistrationDTO;
 import com.cdtn.kltn.dto.auth.response.AuthenticationResponse;
 import com.cdtn.kltn.dto.base.BaseResponseData;
+import com.cdtn.kltn.dto.client.RechargeDTO;
 import com.cdtn.kltn.dto.client.RegistrationClientDTO;
 import com.cdtn.kltn.entity.Client;
 import com.cdtn.kltn.entity.User;
@@ -27,6 +28,10 @@ public class ClientService {
         if (!client.isPresent()) {
             return new BaseResponseData(500, "Client không tồn tại", null);
         }
+
+        if(client.get().getMoney() == null){
+            client.get().setMoney("0");
+        }
         client.get().setFullName(registrationClientDTO.getFullName());
         client.get().setAge(registrationClientDTO.getAge());
         client.get().setProvinceCode(registrationClientDTO.getProvinceCode());
@@ -35,10 +40,28 @@ public class ClientService {
         client.get().setIntroduces(registrationClientDTO.getIntroduces());
         client.get().setPhone(registrationClientDTO.getPhone());
         client.get().setTypeLoan(registrationClientDTO.getTypeLoan());
-        client.get().setMoney(registrationClientDTO.getMoney());
         client.get().setPassport(registrationClientDTO.getPassport());
 
         clientRepository.save(client.get());
         return new BaseResponseData(200, "Đăng ký thành công", null);
     }
+
+    @Transactional
+    public BaseResponseData findByCodeClient(String codeClient){
+       Optional<Client> client = clientRepository.findByCodeClient(codeClient);
+       return client.isPresent() ? new BaseResponseData(200, "Hiển thị thông tin khách hàng thành công", client) : new BaseResponseData(500, "Hiển thị thông tin khách hàng thất bại", null);
+    }
+
+    @Transactional
+    public BaseResponseData RechargeClient(RechargeDTO rechargeDTO){
+        Optional<Client> client = clientRepository.findByCodeClient(rechargeDTO.getCodeClient());
+        if (!client.isPresent()) {
+            return new BaseResponseData(500, "Client không tồn tại", null);
+        }else {
+            client.get().setMoney(String.valueOf(Long.parseLong(client.get().getMoney()) + rechargeDTO.getMoney()));
+            clientRepository.save(client.get());
+            return new BaseResponseData(500,"Nạp thẻ thành công",client);
+        }
+    }
+
 }

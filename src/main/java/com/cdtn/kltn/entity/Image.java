@@ -6,7 +6,7 @@ import lombok.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "typeproperty")
+@Table(name = "image")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

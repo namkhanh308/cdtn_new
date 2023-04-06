@@ -4,6 +4,7 @@ import com.cdtn.kltn.common.Enums;
 import com.cdtn.kltn.dto.auth.request.AuthenticationRequest;
 import com.cdtn.kltn.dto.auth.request.RegistrationDTO;
 import com.cdtn.kltn.dto.auth.response.AuthenticationResponse;
+import com.cdtn.kltn.dto.auth.response.UserInfo;
 import com.cdtn.kltn.dto.base.BaseResponseData;
 import com.cdtn.kltn.entity.Client;
 import com.cdtn.kltn.entity.User;
@@ -38,8 +39,8 @@ public class AuthService {
 //                request.getUsername(),
 //                request.getPassword()));
 
-        User user = userRepository.findByUserName(request.getUsername())
-                .orElseThrow(() -> new StoreException("User not found by email: " + request.getUsername()));
+        User user = userRepository.findByUserName(request.getEmail())
+                .orElseThrow(() -> new StoreException("User not found by email: " + request.getEmail()));
 
         String role = userRepository.findUserRoleByUsername(user.getUsername());
 
@@ -48,7 +49,7 @@ public class AuthService {
         user.setRole(role);
 
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         String jwtToken = jwtService.createToken(authentication);
         String jwtRefreshToken = jwtService.refreshToken(authentication);
 
@@ -58,25 +59,25 @@ public class AuthService {
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .refreshToken(jwtRefreshToken)
-                .userId(user.getId())
-                .codeClient(client.getCodeClient())
-                .typeLoan(client.getTypeLoan())
+                .userInfo(UserInfo.builder().userId(user.getId()).codeClient(client.getCodeClient()).typeLoan(client.getTypeLoan()).lastName(user.getLastName()).build())
                 .build();
     }
     @Transactional
     public BaseResponseData registerUser(RegistrationDTO registrationDTO) {
-        if (userRepository.findByUserName(registrationDTO.getUsername()).isPresent()) {
+        if (userRepository.findByUserName(registrationDTO.getEmail()).isPresent()) {
             return new BaseResponseData(500, "User đã tồn tại", null);
         }
         User userEntity = User.builder()
-                .userName(registrationDTO.getUsername())
+                .userName(registrationDTO.getEmail())
                 .password(passwordEncoder.encode(registrationDTO.getPassword()))
+                .firstName(registrationDTO.getFirstName())
+                .lastName(registrationDTO.getLastName())
                 .role("ROLE_CLIENT")
                 .statusAccount(Enums.Status.ACTIVE.getCode())
                 .build();
         User user =  userRepository.save(userEntity);
 
-        Client client = Client.builder().userId(user.getId()).typeLoan(Enums.LoanType.TENANT.getCode()).build();
+        Client client = Client.builder().userId(user.getId()).typeLoan(Enums.LoanType.TENANT.getCode()).fullName(registrationDTO.getFirstName() + " " + registrationDTO.getLastName()).build();
         Client client1 = clientRepository.save(client);
         client1.setCodeClient("client." + client1.getId().toString());
         clientRepository.save(client1);

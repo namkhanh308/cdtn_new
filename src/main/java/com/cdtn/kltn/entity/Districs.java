@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "province")
+@Table(name = "districs")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

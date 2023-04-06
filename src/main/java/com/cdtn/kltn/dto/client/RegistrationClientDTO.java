@@ -19,6 +19,5 @@ public class RegistrationClientDTO {
     private String introduces;
     private String phone;
     private Integer typeLoan;
-    private String money;
     private String passport;
 }
