@@ -16,9 +16,9 @@ public class ClientController {
 
     private final ClientService clientService;
 
-    @PostMapping("/registerClient")
-    public BaseResponseData register(@RequestBody @Valid RegistrationClientDTO request) {
-        return clientService.registerClient(request);
+    @PostMapping("/saveClient")
+    public BaseResponseData saveClient(@RequestBody @Valid RegistrationClientDTO request) {
+        return clientService.saveClient(request);
     }
     @GetMapping("/findByCodeClient")
     public BaseResponseData findByCodeClient(@RequestParam String codeClient) {

@@ -18,6 +18,7 @@ public class Image {
     private String codeImage;
     private String url;
     private String propertyCode;
-    private String clientCode;
+    private String codeClient;
+    private Integer level;
 
 }

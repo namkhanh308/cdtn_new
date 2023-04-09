@@ -8,9 +8,11 @@ import com.cdtn.kltn.dto.auth.response.UserInfo;
 import com.cdtn.kltn.dto.base.BaseResponseData;
 import com.cdtn.kltn.dto.client.respone.ClientInfoDTO;
 import com.cdtn.kltn.entity.Client;
+import com.cdtn.kltn.entity.Image;
 import com.cdtn.kltn.entity.User;
 import com.cdtn.kltn.exception.StoreException;
 import com.cdtn.kltn.repository.client.ClientRepository;
+import com.cdtn.kltn.repository.image.ImageRepository;
 import com.cdtn.kltn.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +37,9 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final ImageRepository imageRepository;
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public BaseResponseData authenticate(AuthenticationRequest request) {
 //        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 //                request.getUsername(),
 //                request.getPassword()));
@@ -55,14 +58,7 @@ public class AuthService {
         String jwtToken = jwtService.createToken(authentication);
         String jwtRefreshToken = jwtService.refreshToken(authentication);
 
-        Client client = clientRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new StoreException("Client is not contains userID: " + user.getId()));
-
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .refreshToken(jwtRefreshToken)
-                .userInfo(UserInfo.builder().userId(user.getId()).codeClient(client.getCodeClient()).typeLoan(client.getTypeLoan()).lastName(user.getLastName()).build())
-                .build();
+        return (new BaseResponseData(200,"Đăng nhập thành công", AuthenticationResponse.builder().refreshToken(jwtRefreshToken).token(jwtToken).build()));
     }
     @Transactional
     public BaseResponseData registerUser(RegistrationDTO registrationDTO) {
@@ -97,6 +93,7 @@ public class AuthService {
             if(!client.isPresent()){
                 return new BaseResponseData(500, "Client không tồn tại", null);
             }else {
+                Optional<Image> image = imageRepository.findByCodeClientAndLevel(client.get().getCodeClient(),1);
                 return new BaseResponseData(200,"Dữ liệu client được trả ra thành công",
                         ClientInfoDTO.builder()
                                 .codeClient(client.get().getCodeClient())
@@ -111,7 +108,9 @@ public class AuthService {
                                 .money(client.get().getMoney())
                                 .passport(client.get().getPassport())
                                 .firstName(user.get().getFirstName())
-                                .lastName(user.get().getLastName()).build());
+                                .lastName(user.get().getLastName())
+                                .url(image.get().getUrl())
+                                .build());
             }
         }
     }

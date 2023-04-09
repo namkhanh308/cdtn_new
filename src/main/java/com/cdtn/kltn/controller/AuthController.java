@@ -33,8 +33,8 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody @Valid AuthenticationRequest request) {
-        return ResponseEntity.ok(authService.authenticate(request));
+    public BaseResponseData login(@RequestBody @Valid AuthenticationRequest request) {
+        return authService.authenticate(request);
     }
     @PostMapping("/registerAccount")
     public BaseResponseData login(@RequestBody @Valid RegistrationDTO request) {

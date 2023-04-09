@@ -24,4 +24,5 @@ public class ClientInfoDTO {
     private String passport;
     private String firstName;
     private String lastName;
+    private String url;
 }
