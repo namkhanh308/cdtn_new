@@ -1,10 +1,7 @@
 package com.cdtn.kltn.controller;
 
 import com.cdtn.kltn.dto.base.BaseResponseData;
-import com.cdtn.kltn.dto.client.RegistrationClientDTO;
 import com.cdtn.kltn.service.DistrictsService;
-import com.cdtn.kltn.service.ProvinceService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

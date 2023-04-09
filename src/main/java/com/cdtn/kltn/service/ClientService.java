@@ -1,13 +1,9 @@
 package com.cdtn.kltn.service;
 
-import com.cdtn.kltn.dto.auth.request.AuthenticationRequest;
-import com.cdtn.kltn.dto.auth.request.RegistrationDTO;
-import com.cdtn.kltn.dto.auth.response.AuthenticationResponse;
 import com.cdtn.kltn.dto.base.BaseResponseData;
-import com.cdtn.kltn.dto.client.RechargeDTO;
-import com.cdtn.kltn.dto.client.RegistrationClientDTO;
+import com.cdtn.kltn.dto.client.request.RechargeDTO;
+import com.cdtn.kltn.dto.client.request.RegistrationClientDTO;
 import com.cdtn.kltn.entity.Client;
-import com.cdtn.kltn.entity.User;
 import com.cdtn.kltn.repository.client.ClientRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +56,7 @@ public class ClientService {
         }else {
             client.get().setMoney(String.valueOf(Long.parseLong(client.get().getMoney()) + rechargeDTO.getMoney()));
             clientRepository.save(client.get());
-            return new BaseResponseData(500,"Nạp thẻ thành công",client);
+            return new BaseResponseData(200,"Nạp thẻ thành công",client);
         }
     }
 

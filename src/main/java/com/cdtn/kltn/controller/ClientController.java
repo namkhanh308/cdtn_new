@@ -1,11 +1,8 @@
 package com.cdtn.kltn.controller;
 
-import com.cdtn.kltn.dto.auth.request.RegistrationDTO;
 import com.cdtn.kltn.dto.base.BaseResponseData;
-import com.cdtn.kltn.dto.client.RechargeDTO;
-import com.cdtn.kltn.dto.client.RegistrationClientDTO;
-import com.cdtn.kltn.entity.Client;
-import com.cdtn.kltn.service.AuthService;
+import com.cdtn.kltn.dto.client.request.RechargeDTO;
+import com.cdtn.kltn.dto.client.request.RegistrationClientDTO;
 import com.cdtn.kltn.service.ClientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

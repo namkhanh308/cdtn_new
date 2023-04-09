@@ -6,6 +6,7 @@ import com.cdtn.kltn.dto.auth.request.RegistrationDTO;
 import com.cdtn.kltn.dto.auth.response.AuthenticationResponse;
 import com.cdtn.kltn.dto.auth.response.UserInfo;
 import com.cdtn.kltn.dto.base.BaseResponseData;
+import com.cdtn.kltn.dto.client.respone.ClientInfoDTO;
 import com.cdtn.kltn.entity.Client;
 import com.cdtn.kltn.entity.User;
 import com.cdtn.kltn.exception.StoreException;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -77,11 +79,31 @@ public class AuthService {
                 .build();
         User user =  userRepository.save(userEntity);
 
-        Client client = Client.builder().userId(user.getId()).typeLoan(Enums.LoanType.TENANT.getCode()).fullName(registrationDTO.getFirstName() + " " + registrationDTO.getLastName()).build();
+        Client client = Client.builder().userId(user.getId()).typeLoan(Enums.LoanType.TENANT.getCode()).fullName(registrationDTO.getFirstName() + " " + registrationDTO.getLastName()).money("0").build();
         Client client1 = clientRepository.save(client);
         client1.setCodeClient("client." + client1.getId().toString());
         clientRepository.save(client1);
         return new BaseResponseData(200, "Đăng ký thành công", null);
+    }
+
+    @Transactional
+    public BaseResponseData clientInfo(String token) {
+        String email = jwtService.getUserNameByToken(token);
+        Optional<User> user = userRepository.findByUserName(email);
+        if (!user.isPresent()) {
+            return new BaseResponseData(500, "User không tồn tại", null);
+        }else {
+            Optional<Client> client = clientRepository.findByUserId(user.get().getId());
+            if(!client.isPresent()){
+                return new BaseResponseData(500, "Client không tồn tại", null);
+            }else {
+                return new BaseResponseData(200,"Dữ liệu client được trả ra thành công",
+                        ClientInfoDTO.builder()
+                                .client(client.get())
+                                .firstName(user.get().getFirstName())
+                                .lastName(user.get().getLastName()).build());
+            }
+        }
     }
 
 }

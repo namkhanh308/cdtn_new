@@ -1,4 +1,4 @@
-package com.cdtn.kltn.dto.client;
+package com.cdtn.kltn.dto.client.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
