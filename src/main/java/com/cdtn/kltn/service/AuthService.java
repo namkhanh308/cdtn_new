@@ -99,7 +99,17 @@ public class AuthService {
             }else {
                 return new BaseResponseData(200,"Dữ liệu client được trả ra thành công",
                         ClientInfoDTO.builder()
-                                .client(client.get())
+                                .codeClient(client.get().getCodeClient())
+                                .userId(client.get().getUserId())
+                                .fullName(client.get().getFullName())
+                                .provinceCode(client.get().getProvinceCode())
+                                .districtCode(client.get().getDistrictCode())
+                                .wardsCode(client.get().getWardsCode())
+                                .introduces(client.get().getIntroduces())
+                                .phone(client.get().getPhone())
+                                .typeLoan(client.get().getTypeLoan())
+                                .money(client.get().getMoney())
+                                .passport(client.get().getPassport())
                                 .firstName(user.get().getFirstName())
                                 .lastName(user.get().getLastName()).build());
             }

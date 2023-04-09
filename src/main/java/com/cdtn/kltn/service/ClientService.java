@@ -28,8 +28,6 @@ public class ClientService {
         if(client.get().getMoney() == null){
             client.get().setMoney("0");
         }
-        client.get().setFullName(registrationClientDTO.getFullName());
-        client.get().setAge(registrationClientDTO.getAge());
         client.get().setProvinceCode(registrationClientDTO.getProvinceCode());
         client.get().setDistrictCode(registrationClientDTO.getDistrictCode());
         client.get().setWardsCode(registrationClientDTO.getWardsCode());

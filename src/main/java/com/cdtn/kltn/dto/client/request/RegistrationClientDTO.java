@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegistrationClientDTO {
     private String codeClient;
-    private String fullName;
-    private Integer age;
     private String provinceCode;
     private String districtCode;
     private String wardsCode;
@@ -20,4 +18,7 @@ public class RegistrationClientDTO {
     private String phone;
     private Integer typeLoan;
     private String passport;
+    private String url;
+    private String firstName;
+    private String lastName;
 }

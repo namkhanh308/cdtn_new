@@ -21,7 +21,7 @@ public class ClientController {
         return clientService.registerClient(request);
     }
     @GetMapping("/findByCodeClient")
-    public BaseResponseData register(@RequestParam String codeClient) {
+    public BaseResponseData findByCodeClient(@RequestParam String codeClient) {
         return clientService.findByCodeClient(codeClient);
     }
 

@@ -47,5 +47,5 @@ public class AuthController {
         String token = authorizationHeader.replaceAll("Bearer", "").trim();
         return authService.clientInfo(token);
     }
-   
+
 }

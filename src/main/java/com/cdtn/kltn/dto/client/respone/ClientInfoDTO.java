@@ -11,7 +11,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClientInfoDTO {
-    private Client client;
+    private String codeClient;
+    private Long userId;
+    private String fullName;
+    private String provinceCode;
+    private String districtCode;
+    private String wardsCode;
+    private String introduces;
+    private String phone;
+    private Integer typeLoan;
+    private String money;
+    private String passport;
     private String firstName;
     private String lastName;
 }

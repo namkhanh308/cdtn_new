@@ -18,7 +18,6 @@ public class Client {
     private String codeClient;
     private Long userId;
     private String fullName;
-    private Integer age;
     private String provinceCode;
     private String districtCode;
     private String wardsCode;
