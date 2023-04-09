@@ -94,23 +94,43 @@ public class AuthService {
                 return new BaseResponseData(500, "Client không tồn tại", null);
             }else {
                 Optional<Image> image = imageRepository.findByCodeClientAndLevel(client.get().getCodeClient(),1);
-                return new BaseResponseData(200,"Dữ liệu client được trả ra thành công",
-                        ClientInfoDTO.builder()
-                                .codeClient(client.get().getCodeClient())
-                                .userId(client.get().getUserId())
-                                .fullName(client.get().getFullName())
-                                .provinceCode(client.get().getProvinceCode())
-                                .districtCode(client.get().getDistrictCode())
-                                .wardsCode(client.get().getWardsCode())
-                                .introduces(client.get().getIntroduces())
-                                .phone(client.get().getPhone())
-                                .typeLoan(client.get().getTypeLoan())
-                                .money(client.get().getMoney())
-                                .passport(client.get().getPassport())
-                                .firstName(user.get().getFirstName())
-                                .lastName(user.get().getLastName())
-                                .url(image.get().getUrl())
-                                .build());
+                if(image.isPresent()){
+                    return new BaseResponseData(200,"Dữ liệu client được trả ra thành công",
+                            ClientInfoDTO.builder()
+                                    .codeClient(client.get().getCodeClient())
+                                    .userId(client.get().getUserId())
+                                    .fullName(client.get().getFullName())
+                                    .provinceCode(client.get().getProvinceCode())
+                                    .districtCode(client.get().getDistrictCode())
+                                    .wardsCode(client.get().getWardsCode())
+                                    .introduces(client.get().getIntroduces())
+                                    .phone(client.get().getPhone())
+                                    .typeLoan(client.get().getTypeLoan())
+                                    .money(client.get().getMoney())
+                                    .passport(client.get().getPassport())
+                                    .firstName(user.get().getFirstName())
+                                    .lastName(user.get().getLastName())
+                                    .url(image.get().getUrl())
+                                    .build());
+                }else {
+                    return new BaseResponseData(200,"Dữ liệu client được trả ra thành công",
+                            ClientInfoDTO.builder()
+                                    .codeClient(client.get().getCodeClient())
+                                    .userId(client.get().getUserId())
+                                    .fullName(client.get().getFullName())
+                                    .provinceCode(client.get().getProvinceCode())
+                                    .districtCode(client.get().getDistrictCode())
+                                    .wardsCode(client.get().getWardsCode())
+                                    .introduces(client.get().getIntroduces())
+                                    .phone(client.get().getPhone())
+                                    .typeLoan(client.get().getTypeLoan())
+                                    .money(client.get().getMoney())
+                                    .passport(client.get().getPassport())
+                                    .firstName(user.get().getFirstName())
+                                    .lastName(user.get().getLastName())
+                                    .build());
+                }
+
             }
         }
     }
