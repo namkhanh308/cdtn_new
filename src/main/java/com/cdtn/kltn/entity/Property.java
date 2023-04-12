@@ -25,8 +25,9 @@ public class Property {
     private String districtCode;
     private String wardsCode;
     private LocalDateTime dateCreate;
+    private LocalDateTime dateChange;
     private String codeClient;
-    private String typeLoanOrBuy;
+    private Integer typeLoanOrBuy;
     private Integer statusProperty;
 
 }

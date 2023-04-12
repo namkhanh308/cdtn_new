@@ -17,6 +17,7 @@ public class TypeProperty {
     private Long id;
     private String codeTypeProperty;
     private String nameProperty;
-    private Long idParentTypeProperty;
+    private Long codeCateTypePropertyCategory;
+    private Integer displayLevel;
 
 }

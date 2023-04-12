@@ -3,6 +3,7 @@ package com.cdtn.kltn.controller;
 import com.cdtn.kltn.dto.base.BaseResponseData;
 import com.cdtn.kltn.service.DistrictsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,8 +14,8 @@ public class DistrictsController {
     private final DistrictsService districtsService;
 
     @GetMapping("/findAllByProvinceCode")
-    public BaseResponseData login(@RequestParam String provinceCode) {
-        return districtsService.findAllByProvinceCode(provinceCode);
+    public ResponseEntity<BaseResponseData> login(@RequestParam String provinceCode) {
+        return ResponseEntity.ok(districtsService.findAllByProvinceCode(provinceCode));
     }
 
 }

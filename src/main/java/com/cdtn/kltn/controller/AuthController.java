@@ -33,19 +33,19 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public BaseResponseData login(@RequestBody @Valid AuthenticationRequest request) {
-        return authService.authenticate(request);
+    public ResponseEntity<BaseResponseData> login(@RequestBody @Valid AuthenticationRequest request) {
+        return ResponseEntity.ok(authService.authenticate(request));
     }
     @PostMapping("/registerAccount")
-    public BaseResponseData login(@RequestBody @Valid RegistrationDTO request) {
-        return authService.registerUser(request);
+    public ResponseEntity<BaseResponseData>  login(@RequestBody @Valid RegistrationDTO request) {
+        return ResponseEntity.ok(authService.registerUser(request));
     }
 
     @GetMapping("/infoClient")
-    public BaseResponseData ShowClientInfo (HttpServletRequest request) {
+    public ResponseEntity<BaseResponseData> ShowClientInfo (HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
         String token = authorizationHeader.replaceAll("Bearer", "").trim();
-        return authService.clientInfo(token);
+        return ResponseEntity.ok(authService.clientInfo(token));
     }
 
 }

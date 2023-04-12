@@ -6,6 +6,7 @@ import com.cdtn.kltn.dto.client.request.RegistrationClientDTO;
 import com.cdtn.kltn.service.ClientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,17 +18,17 @@ public class ClientController {
     private final ClientService clientService;
 
     @PostMapping("/saveClient")
-    public BaseResponseData saveClient(@RequestBody @Valid RegistrationClientDTO request) {
-        return clientService.saveClient(request);
+    public ResponseEntity<BaseResponseData> saveClient(@RequestBody @Valid RegistrationClientDTO request) {
+        return ResponseEntity.ok(clientService.saveClient(request));
     }
     @GetMapping("/findByCodeClient")
-    public BaseResponseData findByCodeClient(@RequestParam String codeClient) {
-        return clientService.findByCodeClient(codeClient);
+    public ResponseEntity<BaseResponseData> findByCodeClient(@RequestParam String codeClient) {
+        return ResponseEntity.ok(clientService.findByCodeClient(codeClient));
     }
 
     @PostMapping("/recharge")
-    public BaseResponseData RechargeClient(@RequestBody RechargeDTO rechargeDTO) {
-        return clientService.RechargeClient(rechargeDTO);
+    public ResponseEntity<BaseResponseData> RechargeClient(@RequestBody RechargeDTO rechargeDTO) {
+        return ResponseEntity.ok(clientService.RechargeClient(rechargeDTO));
     }
 
 }

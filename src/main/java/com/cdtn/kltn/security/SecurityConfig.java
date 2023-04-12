@@ -25,7 +25,14 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeHttpRequests()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/auth/login", "/auth/registerAccount","/province/**","/districts/**","/wards/**","/common/**" ).permitAll()
+                .requestMatchers(
+                        "/auth/login",
+                        "/auth/registerAccount",
+                        "/province/**",
+                        "/districts/**",
+                        "/wards/**",
+                        "/common/**",
+                        "/typepropery/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .authenticationProvider(authenticationProvider)

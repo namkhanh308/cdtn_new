@@ -18,4 +18,20 @@ public class CommonService {
         }
         return  new BaseResponseData(200, "Hiển thị tính chất thành công", list);
     }
+
+    public BaseResponseData getTypePropertyCategory(){
+        List<OptionDTO> list = new ArrayList<>();
+        for (Enums.TypePropertyCategory s: Enums.TypePropertyCategory.values()) {
+            list.add(new OptionDTO(s.getCode().toString(), s.getName()));
+        }
+        return  new BaseResponseData(200, "Hiển thị danh mục loại bất động sản thành công", list);
+    }
+
+    public BaseResponseData getLawCategory(){
+        List<OptionDTO> list = new ArrayList<>();
+        for (Enums.LawCategory s: Enums.LawCategory.values()) {
+            list.add(new OptionDTO(s.getCode().toString(), s.getName()));
+        }
+        return  new BaseResponseData(200, "Hiển thị danh mục loại pháp lý thành công", list);
+    }
 }
