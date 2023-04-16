@@ -4,8 +4,7 @@ import com.cdtn.kltn.common.Enums;
 import com.cdtn.kltn.dto.auth.request.AuthenticationRequest;
 import com.cdtn.kltn.dto.auth.request.RegistrationDTO;
 import com.cdtn.kltn.dto.auth.response.AuthenticationResponse;
-import com.cdtn.kltn.dto.auth.response.UserInfo;
-import com.cdtn.kltn.dto.base.BaseResponseData;
+import com.cdtn.kltn.dto.base.response.BaseResponseData;
 import com.cdtn.kltn.dto.client.respone.ClientInfoDTO;
 import com.cdtn.kltn.entity.Client;
 import com.cdtn.kltn.entity.Image;
@@ -16,7 +15,6 @@ import com.cdtn.kltn.repository.image.ImageRepository;
 import com.cdtn.kltn.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.Utils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,9 +22,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
+
+
+import java.io.FileNotFoundException;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -134,5 +133,6 @@ public class AuthService {
             }
         }
     }
+
 
 }

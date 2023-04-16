@@ -1,7 +1,6 @@
 package com.cdtn.kltn.controller;
 
-import com.cdtn.kltn.dto.base.BaseResponseData;
-import com.cdtn.kltn.entity.TypeProperty;
+import com.cdtn.kltn.dto.base.response.BaseResponseData;
 import com.cdtn.kltn.service.TypePropertyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class TypePropertyController {
     private final TypePropertyService typePropertyService;
 
-    @RequestMapping("/findAllByCodeTypePropertyCategorySearch")
+    @RequestMapping("/findAllByCodeTypePropertySearch")
     public ResponseEntity<BaseResponseData> findAllByCodeTypePropertyCategorySearch(@RequestParam Long codeTypePropertyCategory){
         return ResponseEntity.ok(typePropertyService.findAllByCodeCateTypePropertyCategory(codeTypePropertyCategory));
     }
-    @RequestMapping("/findAllByCodeTypePropertyCategory")
+    @RequestMapping("/findAllByCodeTypeProperty")
     public ResponseEntity<BaseResponseData> findAllByCodeTypePropertyCategory(@RequestParam Long codeTypePropertyCategory){
         return ResponseEntity.ok(typePropertyService.findAllByCodeTypePropertyCategory(codeTypePropertyCategory));
     }

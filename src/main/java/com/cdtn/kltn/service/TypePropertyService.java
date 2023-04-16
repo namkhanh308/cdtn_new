@@ -1,7 +1,6 @@
 package com.cdtn.kltn.service;
 
-import com.cdtn.kltn.dto.base.BaseResponseData;
-import com.cdtn.kltn.entity.Province;
+import com.cdtn.kltn.dto.base.response.BaseResponseData;
 import com.cdtn.kltn.entity.TypeProperty;
 import com.cdtn.kltn.repository.typeproperty.TypePropertyRepository;
 import lombok.RequiredArgsConstructor;

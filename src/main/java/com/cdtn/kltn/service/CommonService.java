@@ -1,8 +1,8 @@
 package com.cdtn.kltn.service;
 
 import com.cdtn.kltn.common.Enums;
-import com.cdtn.kltn.dto.base.BaseResponseData;
-import com.cdtn.kltn.dto.base.OptionDTO;
+import com.cdtn.kltn.dto.base.response.BaseResponseData;
+import com.cdtn.kltn.dto.base.response.OptionDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

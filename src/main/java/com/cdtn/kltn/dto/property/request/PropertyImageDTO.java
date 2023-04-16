@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PropertyImageDTO {
-    private String propertyCode;
     private String codeImage;
     private String url;
 }

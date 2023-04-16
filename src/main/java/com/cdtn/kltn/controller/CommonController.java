@@ -1,8 +1,6 @@
 package com.cdtn.kltn.controller;
 
-import com.cdtn.kltn.dto.base.BaseResponseData;
-import com.cdtn.kltn.entity.Image;
-import com.cdtn.kltn.service.ClientService;
+import com.cdtn.kltn.dto.base.response.BaseResponseData;
 import com.cdtn.kltn.service.CommonService;
 import com.cdtn.kltn.service.ImageService;
 import lombok.RequiredArgsConstructor;

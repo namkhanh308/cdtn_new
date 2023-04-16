@@ -1,4 +1,4 @@
-package com.cdtn.kltn.dto.base;
+package com.cdtn.kltn.dto.base.response;
 
 import lombok.Data;
 

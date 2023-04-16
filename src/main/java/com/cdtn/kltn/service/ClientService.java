@@ -1,6 +1,6 @@
 package com.cdtn.kltn.service;
 
-import com.cdtn.kltn.dto.base.BaseResponseData;
+import com.cdtn.kltn.dto.base.response.BaseResponseData;
 import com.cdtn.kltn.dto.client.request.RechargeDTO;
 import com.cdtn.kltn.dto.client.request.RegistrationClientDTO;
 import com.cdtn.kltn.entity.Client;

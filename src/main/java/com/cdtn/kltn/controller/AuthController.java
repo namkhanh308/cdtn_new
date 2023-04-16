@@ -2,20 +2,23 @@ package com.cdtn.kltn.controller;
 
 import com.cdtn.kltn.dto.auth.request.AuthenticationRequest;
 import com.cdtn.kltn.dto.auth.request.RegistrationDTO;
-import com.cdtn.kltn.dto.auth.response.AuthenticationResponse;
-import com.cdtn.kltn.dto.base.BaseResponseData;
-import com.cdtn.kltn.entity.User;
+import com.cdtn.kltn.dto.base.response.BaseResponseData;
 import com.cdtn.kltn.security.JwtFilter;
 import com.cdtn.kltn.service.AuthService;
 import com.cdtn.kltn.service.JwtService;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.repo.InputStreamResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -47,5 +50,6 @@ public class AuthController {
         String token = authorizationHeader.replaceAll("Bearer", "").trim();
         return ResponseEntity.ok(authService.clientInfo(token));
     }
+
 
 }

@@ -15,6 +15,7 @@ import java.util.List;
 public class CreatePropertyDTO {
     private String codeProperty;
     private String codeTypeProperty;
+    private String codeCateTypePropertyCategory;
     private String nameProperty;
     private String provinceCode;
     private String districtCode;

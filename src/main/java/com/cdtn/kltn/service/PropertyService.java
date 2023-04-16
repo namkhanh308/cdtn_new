@@ -1,9 +1,15 @@
 package com.cdtn.kltn.service;
 
-import com.cdtn.kltn.dto.base.BaseResponseData;
+import com.cdtn.kltn.common.UltilsPage;
+import com.cdtn.kltn.dto.pagination.PagingResponeDTO;
+import com.cdtn.kltn.dto.property.request.PropertyImageDTO;
+import com.cdtn.kltn.dto.property.request.PropertySearchDTO;
+import com.cdtn.kltn.dto.base.response.BaseResponseData;
 import com.cdtn.kltn.dto.property.mapper.ImageMapperProperty;
 import com.cdtn.kltn.dto.property.mapper.PropertyMapper;
 import com.cdtn.kltn.dto.property.request.CreatePropertyDTO;
+import com.cdtn.kltn.dto.property.respone.PropertyDataSearchRespone;
+import com.cdtn.kltn.dto.property.respone.PropertyDetailDataRespone;
 import com.cdtn.kltn.dto.propertyinfo.mapper.PropertyInfoMapper;
 import com.cdtn.kltn.entity.Image;
 import com.cdtn.kltn.entity.Property;
@@ -12,6 +18,7 @@ import com.cdtn.kltn.exception.StoreException;
 import com.cdtn.kltn.repository.image.ImageRepository;
 import com.cdtn.kltn.repository.property.PropertyRepository;
 import com.cdtn.kltn.repository.propertyinfo.PropertyInfoRepository;
+import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +26,8 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,38 +42,39 @@ public class PropertyService {
     private final ImageMapperProperty imageMapperProperty;
 
     @Transactional
-    public BaseResponseData createProperty(CreatePropertyDTO createPropertyDTO){
+    public BaseResponseData createProperty(CreatePropertyDTO createPropertyDTO) {
         try {
             Property property = null;
             PropertyInfo propertyInfo = null;
             List<Image> list = null;
 
-            if(Objects.isNull(createPropertyDTO.getCodeProperty())){
+            //thêm mới
+            if (Objects.isNull(createPropertyDTO.getCodeProperty())) {
                 String codeProperty = String.valueOf(getIndex() + 1);
                 Long index_img = imageService.getIndex();
-                property = propertyMapper.createProperty(createPropertyDTO,codeProperty);
-                propertyInfo = propertyInfoMapper.createPropertyInfo(createPropertyDTO,codeProperty);
-                list = imageMapperProperty.createListImage(createPropertyDTO.getImageList(),codeProperty ,index_img);
+                property = propertyMapper.createProperty(createPropertyDTO, codeProperty);
+                propertyInfo = propertyInfoMapper.createPropertyInfo(createPropertyDTO, codeProperty);
+                list = imageMapperProperty.createListImage(createPropertyDTO.getImageList(), codeProperty, index_img);
                 // Lưu
                 propertyRepository.save(property);
                 propertyInfoRepository.save(propertyInfo);
                 imageRepository.saveAll(list);
                 return new BaseResponseData(200, "Success", null);
-            }else {
+            } else {
                 Long index_img = imageService.getIndex();
                 //Thay đổi image
                 List<Image> currentList = imageService.findAllByPropertyCode(createPropertyDTO.getCodeProperty());
                 List<Image> imageListDelete = imageMapperProperty.updateListDelete(
-                                                        createPropertyDTO.getImageList(),
-                                                        currentList);
+                        createPropertyDTO.getImageList(),
+                        currentList);
                 List<Image> newList = imageMapperProperty.updateList(createPropertyDTO.getImageList(),
-                                                                    currentList,index_img);
+                        currentList, index_img);
 
                 //Thay đổi property
                 property = propertyRepository.findByCodeProperty(createPropertyDTO.getCodeProperty())
                         .orElseThrow(() -> new StoreException("Property not found with id " +
-                                                                createPropertyDTO.getCodeProperty()));
-                propertyMapper.updateProperty(createPropertyDTO,property);
+                                createPropertyDTO.getCodeProperty()));
+                propertyMapper.updateProperty(createPropertyDTO, property);
 
                 //Thay đổi propertyInfor
                 propertyInfo = propertyInfoRepository.findByCodeProperty(createPropertyDTO.getCodeProperty()).get();
@@ -87,7 +97,53 @@ public class PropertyService {
         }
     }
 
-    public Long getIndex(){
+    public BaseResponseData findAllPropertyManager(PropertySearchDTO propertySearchDTO) {
+        // Lấy ra offset, page
+        PagingResponeDTO pagingResponeDTO = UltilsPage.Paging(propertySearchDTO);
+        // Lấy ra danh sách theo điều kiện tìm kiếm
+        List<PropertyDataSearchRespone> propertyDatumSearchRespones = propertyRepository.findAllPropertyManager
+                (propertySearchDTO.getCodeProperty(),
+                        propertySearchDTO.getNameProperty(),
+                        propertySearchDTO.getCodeTypeProperty(),
+                        pagingResponeDTO.getOffset(),
+                        pagingResponeDTO.getRecord());
+        //Lấy ra tổng số bản ghi - totalRecord
+        pagingResponeDTO.setTotalRecord(propertyDatumSearchRespones.stream()
+                .filter(property -> StringUtils.isEmpty(property.getCodeProperty()))
+                .findFirst()
+                .orElse(null)
+                .getTotalRecord());
+        //xóa bỏ hàng chứa totalRecord
+        propertyDatumSearchRespones.removeIf(property -> StringUtils.isEmpty(property.getCodeProperty()));
+        pagingResponeDTO.setData(propertyDatumSearchRespones);
+
+        return propertyDatumSearchRespones.size() > 0 ?
+                new BaseResponseData(200, "Danh sách tài sản hiển thị thành công", pagingResponeDTO) :
+                new BaseResponseData(500, "Danh sách tài sản hiển thị tất bại", null);
+    }
+
+    public Long getIndex() {
         return Objects.isNull(propertyRepository.getIndex()) ? 0 : propertyRepository.getIndex();
     }
+
+    public BaseResponseData findPropertyDetail(String codeProperty) {
+        //Lấy ra thông tin tài sản
+        Optional<PropertyDetailDataRespone> propertyDetailDataResponeList = propertyRepository.findPropertyByCodeProperty(codeProperty);
+        if (propertyDetailDataResponeList.isPresent()) {
+            // Set lại các thuộc tính response
+            CreatePropertyDTO createPropertyDTO = propertyMapper.setDataPropertyDetailDTO(propertyDetailDataResponeList.get());
+            // Lấy ra danh sách ảnh theo codeProperty
+            List<Image> imageList = imageService.findAllByPropertyCode(codeProperty);
+            // Biến đổi lại list ảnh theo đối tượng respone
+            List<PropertyImageDTO> imageDTOS = imageList.stream().map(
+                    image -> PropertyImageDTO.builder()
+                            .codeImage(image.getCodeImage())
+                            .url(image.getUrl())
+                            .build()).collect(Collectors.toList());
+            createPropertyDTO.setImageList(imageDTOS);
+                return new BaseResponseData(200, "Chi tiết tài sản hiển thị thành công", createPropertyDTO);
+        }
+        return new BaseResponseData(200, "Chi tiết tài sản hiển thị tất bại", null);
+    }
 }
+

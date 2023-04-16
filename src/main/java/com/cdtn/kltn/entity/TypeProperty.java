@@ -16,7 +16,7 @@ public class TypeProperty {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String codeTypeProperty;
-    private String nameProperty;
+    private String nameTypeProperty;
     private Long codeCateTypePropertyCategory;
     private Integer displayLevel;
 

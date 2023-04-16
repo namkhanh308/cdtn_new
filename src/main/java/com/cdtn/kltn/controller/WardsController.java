@@ -1,6 +1,6 @@
 package com.cdtn.kltn.controller;
 
-import com.cdtn.kltn.dto.base.BaseResponseData;
+import com.cdtn.kltn.dto.base.response.BaseResponseData;
 import com.cdtn.kltn.service.WardsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

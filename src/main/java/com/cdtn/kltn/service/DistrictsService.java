@@ -1,10 +1,8 @@
 package com.cdtn.kltn.service;
 
-import com.cdtn.kltn.dto.base.BaseResponseData;
+import com.cdtn.kltn.dto.base.response.BaseResponseData;
 import com.cdtn.kltn.entity.Districs;
-import com.cdtn.kltn.entity.Province;
 import com.cdtn.kltn.repository.districs.DistricsRepository;
-import com.cdtn.kltn.repository.province.ProvinceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
