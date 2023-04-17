@@ -1,6 +1,5 @@
 package com.cdtn.kltn.dto.client.respone;
 
-import com.cdtn.kltn.entity.Client;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,4 +24,8 @@ public class ClientInfoDTO {
     private String firstName;
     private String lastName;
     private String url;
+    private Integer accountTypeLever;
+    private String accountLeverTypeName;
+    private Integer statusAccountLever;
+
 }

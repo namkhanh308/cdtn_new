@@ -6,10 +6,12 @@ import com.cdtn.kltn.dto.auth.request.RegistrationDTO;
 import com.cdtn.kltn.dto.auth.response.AuthenticationResponse;
 import com.cdtn.kltn.dto.base.response.BaseResponseData;
 import com.cdtn.kltn.dto.client.respone.ClientInfoDTO;
+import com.cdtn.kltn.entity.AccountsLever;
 import com.cdtn.kltn.entity.Client;
 import com.cdtn.kltn.entity.Image;
 import com.cdtn.kltn.entity.User;
 import com.cdtn.kltn.exception.StoreException;
+import com.cdtn.kltn.repository.accountlever.AccountsLeverRepository;
 import com.cdtn.kltn.repository.client.ClientRepository;
 import com.cdtn.kltn.repository.image.ImageRepository;
 import com.cdtn.kltn.repository.user.UserRepository;
@@ -22,10 +24,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
-
-import java.io.FileNotFoundException;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,16 +35,15 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
+    private final ImageRepository imageRepository;
+    private final AccountsLeverRepository accountsLeverRepository;
+
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
-    private final ImageRepository imageRepository;
+
 
     public BaseResponseData authenticate(AuthenticationRequest request) {
-//        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-//                request.getUsername(),
-//                request.getPassword()));
-
         User user = userRepository.findByUserName(request.getEmail())
                 .orElseThrow(() -> new StoreException("User not found by email: " + request.getEmail()));
 
@@ -73,11 +74,24 @@ public class AuthService {
                 .statusAccount(Enums.Status.ACTIVE.getCode())
                 .build();
         User user =  userRepository.save(userEntity);
-
-        Client client = Client.builder().userId(user.getId()).typeLoan(Enums.LoanType.TENANT.getCode()).fullName(registrationDTO.getFirstName() + " " + registrationDTO.getLastName()).money("0").build();
+        //khởi tạo client
+        Client client = Client.builder().userId(user.getId())
+                .typeLoan(Enums.LoanType.TENANT.getCode())
+                .fullName(registrationDTO.getFirstName() + " " + registrationDTO.getLastName())
+                .money("0")
+                .build();
         Client client1 = clientRepository.save(client);
         client1.setCodeClient("client." + client1.getId().toString());
         clientRepository.save(client1);
+        // Khởi tạo account_lever
+        accountsLeverRepository.save(AccountsLever.builder()
+                .accountTypeLever(Enums.TypeAccountLever.MIENPHI.getCode())
+                .codeClient(client1.getCodeClient())
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusDays(1))
+                .countNewsUpload(Enums.TypeAccountLever.MIENPHI.getCountNewsUpload())
+                .status(1)
+                .build());
         return new BaseResponseData(200, "Đăng ký thành công", null);
     }
 
@@ -85,34 +99,19 @@ public class AuthService {
     public BaseResponseData clientInfo(String token) {
         String email = jwtService.getUserNameByToken(token);
         Optional<User> user = userRepository.findByUserName(email);
-        if (!user.isPresent()) {
+        if (user.isEmpty()) {
             return new BaseResponseData(500, "User không tồn tại", null);
         }else {
             Optional<Client> client = clientRepository.findByUserId(user.get().getId());
-            if(!client.isPresent()){
+            if(client.isEmpty()){
                 return new BaseResponseData(500, "Client không tồn tại", null);
             }else {
                 Optional<Image> image = imageRepository.findByCodeClientAndLevel(client.get().getCodeClient(),1);
-                if(image.isPresent()){
-                    return new BaseResponseData(200,"Dữ liệu client được trả ra thành công",
-                            ClientInfoDTO.builder()
-                                    .codeClient(client.get().getCodeClient())
-                                    .userId(client.get().getUserId())
-                                    .fullName(client.get().getFullName())
-                                    .provinceCode(client.get().getProvinceCode())
-                                    .districtCode(client.get().getDistrictCode())
-                                    .wardsCode(client.get().getWardsCode())
-                                    .introduces(client.get().getIntroduces())
-                                    .phone(client.get().getPhone())
-                                    .typeLoan(client.get().getTypeLoan())
-                                    .money(client.get().getMoney())
-                                    .passport(client.get().getPassport())
-                                    .firstName(user.get().getFirstName())
-                                    .lastName(user.get().getLastName())
-                                    .url(image.get().getUrl())
-                                    .build());
+                Optional<AccountsLever> accountsLever = accountsLeverRepository.findByCodeClient(client.get().getCodeClient());
+                if(accountsLever.isEmpty()){
+                    return new BaseResponseData(500, "Cấp tài khoản không tồn tại", null);
                 }else {
-                    return new BaseResponseData(200,"Dữ liệu client được trả ra thành công",
+                    return image.map(value -> new BaseResponseData(200, "Dữ liệu client được trả ra thành công",
                             ClientInfoDTO.builder()
                                     .codeClient(client.get().getCodeClient())
                                     .userId(client.get().getUserId())
@@ -127,9 +126,30 @@ public class AuthService {
                                     .passport(client.get().getPassport())
                                     .firstName(user.get().getFirstName())
                                     .lastName(user.get().getLastName())
-                                    .build());
+                                    .url(value.getUrl())
+                                    .accountTypeLever(accountsLever.get().getAccountTypeLever())
+                                    .accountLeverTypeName(Enums.TypeAccountLever.checkValue(accountsLever.get().getAccountTypeLever()))
+                                    .statusAccountLever(accountsLever.get().getStatus())
+                                    .build())).orElseGet(() -> new BaseResponseData(200, "Dữ liệu client được trả ra thành công",
+                            ClientInfoDTO.builder()
+                                    .codeClient(client.get().getCodeClient())
+                                    .userId(client.get().getUserId())
+                                    .fullName(client.get().getFullName())
+                                    .provinceCode(client.get().getProvinceCode())
+                                    .districtCode(client.get().getDistrictCode())
+                                    .wardsCode(client.get().getWardsCode())
+                                    .introduces(client.get().getIntroduces())
+                                    .phone(client.get().getPhone())
+                                    .typeLoan(client.get().getTypeLoan())
+                                    .money(client.get().getMoney())
+                                    .passport(client.get().getPassport())
+                                    .firstName(user.get().getFirstName())
+                                    .lastName(user.get().getLastName())
+                                    .accountTypeLever(accountsLever.get().getAccountTypeLever())
+                                    .accountLeverTypeName(Enums.TypeAccountLever.checkValue(accountsLever.get().getAccountTypeLever()))
+                                    .statusAccountLever(accountsLever.get().getStatus())
+                                    .build()));
                 }
-
             }
         }
     }

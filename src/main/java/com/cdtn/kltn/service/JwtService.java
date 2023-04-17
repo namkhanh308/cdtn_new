@@ -12,8 +12,8 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private final static String SECRET_KEY = "khanhdn1";
-    private final static int JWT_EXP = 86400;
+    private static final String SECRET_KEY = "khanhdn1";
+    private static final int JWT_EXP = 86400;
 
     public String createToken(Authentication authentication) {
         UserDetails user = (UserDetails) authentication.getPrincipal();

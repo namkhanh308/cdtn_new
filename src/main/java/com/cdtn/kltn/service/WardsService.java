@@ -16,7 +16,9 @@ public class WardsService {
 
     public BaseResponseData findAllByDistrictCode(String districsCode){
         List<Wards> districsList = wardsRepository.findAllByDistrictCode(districsCode);
-        return districsList.size() > 0 ? new BaseResponseData(200, "Hiển thị danh sách phường, xã thành công", districsList) : new BaseResponseData(500, "Hiển thị danh phường xã thất bại", null);
+        return !districsList.isEmpty() ?
+                new BaseResponseData(200, "Hiển thị danh sách phường, xã thành công", districsList) :
+                new BaseResponseData(500, "Hiển thị danh phường xã thất bại", null);
     }
 
 }

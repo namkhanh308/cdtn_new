@@ -14,15 +14,17 @@ public class TypePropertyService {
     private final TypePropertyRepository typePropertyRepository;
 
     public BaseResponseData findAllByCodeCateTypePropertyCategory(Long codeTypePropertyCategory){
-        List<TypeProperty> typeProperties = typePropertyRepository.findAllByCodeCateTypePropertyCategory(codeTypePropertyCategory);
-        return typeProperties.size() > 0
+        List<TypeProperty> typeProperties =
+                typePropertyRepository.findAllByCodeCateTypePropertyCategory(codeTypePropertyCategory);
+        return !typeProperties.isEmpty()
                 ? new BaseResponseData(200, "Hiển thị danh sách loại tài sản thành công", typeProperties)
                 : new BaseResponseData(500, "Hiển thị danh sách loại tài sản thất bại", null);
     }
 
     public BaseResponseData findAllByCodeTypePropertyCategory(Long codeTypePropertyCategory){
-        List<TypeProperty> typeProperties = typePropertyRepository.findAllByCodeCateTypePropertyCategoryAndDisplayLevel(codeTypePropertyCategory,2);
-        return typeProperties.size() > 0
+        List<TypeProperty> typeProperties =
+                typePropertyRepository.findAllByCodeCateTypePropertyCategoryAndDisplayLevel(codeTypePropertyCategory,2);
+        return !typeProperties.isEmpty()
                 ? new BaseResponseData(200, "Hiển thị danh sách loại tài sản thành công", typeProperties)
                 : new BaseResponseData(500, "Hiển thị danh sách loại tài sản thất bại", null);
     }

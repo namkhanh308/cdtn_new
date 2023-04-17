@@ -27,20 +27,9 @@ public class User implements UserDetails {
     private Integer statusAccount;
     private String role;
 
-    //    @ManyToMany
-//    @JoinTable(
-//            name = "users_role",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "role_id")
-//    )
-//    private Set<Role> roles = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-//        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-//        roles.forEach(authority -> authorities.add(new SimpleGrantedAuthority(authority.getName())));
-//        return List.of(new SimpleGrantedAuthority(authorities.toString()));
-
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(role));
         return List.of(new SimpleGrantedAuthority(authorities.toString()));

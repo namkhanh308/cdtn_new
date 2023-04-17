@@ -15,6 +15,6 @@ public class DistrictsService {
 
     public BaseResponseData findAllByProvinceCode(String provinceCode){
         List<Districs> districsList = districsRepository.findAllByProvinceCode(provinceCode);
-        return districsList.size() > 0 ? new BaseResponseData(200, "Hiển thị danh sách huyện thành công", districsList) : new BaseResponseData(500, "Hiển thị danh sách huyện thất bại", null);
+        return !districsList.isEmpty() ? new BaseResponseData(200, "Hiển thị danh sách huyện thành công", districsList) : new BaseResponseData(500, "Hiển thị danh sách huyện thất bại", null);
     }
 }

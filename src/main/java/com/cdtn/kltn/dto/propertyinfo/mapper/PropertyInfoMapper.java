@@ -2,7 +2,6 @@ package com.cdtn.kltn.dto.propertyinfo.mapper;
 
 import com.cdtn.kltn.dto.property.request.CreatePropertyDTO;
 import com.cdtn.kltn.entity.PropertyInfo;
-import com.cdtn.kltn.entity.TypeProperty;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,6 +21,7 @@ public class PropertyInfoMapper {
                 .priceLoan(createPropertyDTO.getPriceLoan())
                 .introduces(createPropertyDTO.getIntroduces())
                 .location(createPropertyDTO.getLocation())
+                .bathCount(createPropertyDTO.getBathCount())
                 .build();
     }
 
@@ -32,6 +32,7 @@ public class PropertyInfoMapper {
         propertyInfo.setBedCount(createPropertyDTO.getBedCount());
         propertyInfo.setLivingCount(createPropertyDTO.getLivingCount());
         propertyInfo.setKitchenCount(createPropertyDTO.getKitchenCount());
+        propertyInfo.setBathCount(createPropertyDTO.getBathCount());
         propertyInfo.setLaw(createPropertyDTO.getLaw());
         propertyInfo.setPriceBuy(createPropertyDTO.getPriceBuy());
         propertyInfo.setPriceLoan(createPropertyDTO.getPriceLoan());

@@ -2,7 +2,6 @@ package com.cdtn.kltn.repository.client;
 
 import com.cdtn.kltn.entity.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

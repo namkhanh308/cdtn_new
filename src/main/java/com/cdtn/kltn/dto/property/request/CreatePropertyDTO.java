@@ -1,6 +1,5 @@
 package com.cdtn.kltn.dto.property.request;
 
-import com.cdtn.kltn.entity.Image;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +26,7 @@ public class CreatePropertyDTO {
     private Integer bedCount;
     private Integer livingCount;
     private Integer kitchenCount;
+    private Integer bathCount;
     private Integer law;
     private String priceBuy;
     private String priceLoan;

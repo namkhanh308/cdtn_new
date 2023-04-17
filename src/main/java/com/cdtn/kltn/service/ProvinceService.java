@@ -17,6 +17,8 @@ public class ProvinceService {
     @Transactional
     public BaseResponseData findAll() {
         List<Province> provinceList = provinceRepository.findAll();
-        return provinceList.size() > 0 ? new BaseResponseData(200, "Hiển thị danh sách tỉnh, thành thành công", provinceList) : new BaseResponseData(500, "Hiển thị danh sách tỉnh, thành thất bại", null);
+        return !provinceList.isEmpty() ?
+                new BaseResponseData(200, "Hiển thị danh sách tỉnh, thành thành công", provinceList) :
+                new BaseResponseData(500, "Hiển thị danh sách tỉnh, thành thất bại", null);
     }
 }

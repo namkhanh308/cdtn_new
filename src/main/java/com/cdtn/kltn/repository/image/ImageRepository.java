@@ -1,8 +1,6 @@
 package com.cdtn.kltn.repository.image;
 
-import com.cdtn.kltn.entity.Client;
 import com.cdtn.kltn.entity.Image;
-import com.cdtn.kltn.entity.Province;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

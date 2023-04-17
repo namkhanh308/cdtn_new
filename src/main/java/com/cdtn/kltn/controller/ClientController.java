@@ -27,8 +27,8 @@ public class ClientController {
     }
 
     @PostMapping("/recharge")
-    public ResponseEntity<BaseResponseData> RechargeClient(@RequestBody RechargeDTO rechargeDTO) {
-        return ResponseEntity.ok(clientService.RechargeClient(rechargeDTO));
+    public ResponseEntity<BaseResponseData> rechargeClient(@RequestBody RechargeDTO rechargeDTO) {
+        return ResponseEntity.ok(clientService.rechargeClient(rechargeDTO));
     }
 
 }

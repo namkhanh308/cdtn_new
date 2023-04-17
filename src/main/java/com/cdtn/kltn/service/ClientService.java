@@ -31,19 +31,19 @@ public class ClientService {
     @Transactional
     public BaseResponseData saveClient(RegistrationClientDTO registrationClientDTO) {
         Optional<Client> client = clientRepository.findByCodeClient(registrationClientDTO.getCodeClient());
-        if (!client.isPresent()) {
+        if (client.isEmpty()) {
             return new BaseResponseData(500, "Client không tồn tại", null);
         } else {
             Optional<User> user = userRepository.findById(client.get().getUserId());
-            if (!user.isPresent()) {
+            if (user.isEmpty()) {
                 return new BaseResponseData(500, "User không tồn tại", null);
             } else {
                 Optional<Image> image = imageRepository.findByCodeClient(client.get().getCodeClient());
                 //Set lại thông tin image
-                if (!image.isPresent()) {
+                if (image.isEmpty()) {
                     imageRepository.save(Image.builder().codeClient(client.get()
                             .getCodeClient())
-                            .codeImage("IMAGE_" + imageService.getIndex()+1)
+                            .codeImage("IMAGE_" + imageService.getIndex() + 1)
                             .url(registrationClientDTO.getUrl()).level(1)
                             .build());
                 } else {
@@ -80,9 +80,9 @@ public class ClientService {
     }
 
     @Transactional
-    public BaseResponseData RechargeClient(RechargeDTO rechargeDTO) {
+    public BaseResponseData rechargeClient(RechargeDTO rechargeDTO) {
         Optional<Client> client = clientRepository.findByCodeClient(rechargeDTO.getCodeClient());
-        if (!client.isPresent()) {
+        if (client.isEmpty()) {
             return new BaseResponseData(500, "Client không tồn tại", null);
         } else {
             client.get().setMoney(String.valueOf(Long.parseLong(client.get().getMoney()) + rechargeDTO.getMoney()));

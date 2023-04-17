@@ -13,7 +13,7 @@ public class PagingResponeDTO {
     private Integer start;
     private Integer end;
     private Integer offset;
-    private Integer record;
+    private Integer records;
     private Integer page;
     private Integer totalRecord;
     private Object data;

@@ -1,6 +1,5 @@
 package com.cdtn.kltn.dto.base.response;
 
-import lombok.Builder;
 import lombok.Data;
 
 @Data

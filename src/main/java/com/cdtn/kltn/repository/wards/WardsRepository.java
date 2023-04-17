@@ -1,6 +1,5 @@
 package com.cdtn.kltn.repository.wards;
 
-import com.cdtn.kltn.entity.User;
 import com.cdtn.kltn.entity.Wards;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
