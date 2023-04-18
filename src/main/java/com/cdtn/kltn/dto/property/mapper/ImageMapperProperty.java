@@ -33,13 +33,14 @@ public class ImageMapperProperty {
         return differentLists;
     }
 
-    public List<Image> updateList(List<PropertyImageDTO> newListDTO, List<Image> currentList, Long codeImage){
+    public List<Image> updateList(List<PropertyImageDTO> newListDTO, List<Image> currentList, Long codeImage, String codeProperty){
         List<Image> newList = new ArrayList<>();
         for (PropertyImageDTO propertyImageDTO : newListDTO) {
             Image image = checkContains(propertyImageDTO.getCodeImage(),currentList);
             if(Objects.isNull(image)){
                 newList.add(Image.builder()
                         .codeImage("IMAGE_" + (codeImage++))
+                        .propertyCode(codeProperty)
                         .url(propertyImageDTO.getUrl())
                         .level(2)
                         .build());

@@ -23,6 +23,11 @@ public class PropertyController {
         return ResponseEntity.ok(propertyService.createProperty(propertyDTO));
     }
 
+    @DeleteMapping("/loan/deleteProperty")
+    public ResponseEntity<BaseResponseData> deleteProperty(@RequestParam String codeProperty) {
+        return ResponseEntity.ok(propertyService.deleteProperty(codeProperty));
+    }
+
     @GetMapping("/loan/findAllProperty")
     public ResponseEntity<BaseResponseData> findAllPropertyManager(@ModelAttribute PropertySearchDTO brp, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

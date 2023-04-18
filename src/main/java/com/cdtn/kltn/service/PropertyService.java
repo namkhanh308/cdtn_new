@@ -42,9 +42,9 @@ public class PropertyService {
     @Transactional
     public BaseResponseData createProperty(CreatePropertyDTO createPropertyDTO) {
         try {
-            Property property = null;
-            PropertyInfo propertyInfo = null;
-            List<Image> list = null;
+            Property property;
+            PropertyInfo propertyInfo;
+            List<Image> list;
 
             //thêm mới
             if (Objects.isNull(createPropertyDTO.getCodeProperty())) {
@@ -57,7 +57,6 @@ public class PropertyService {
                 propertyRepository.save(property);
                 propertyInfoRepository.save(propertyInfo);
                 imageRepository.saveAll(list);
-                return new BaseResponseData(200, "Success", null);
             } else {
                 Long indexImg = imageService.getIndex();
                 //Thay đổi image
@@ -66,7 +65,7 @@ public class PropertyService {
                         createPropertyDTO.getImageList(),
                         currentList);
                 List<Image> newList = imageMapperProperty.updateList(createPropertyDTO.getImageList(),
-                        currentList, indexImg);
+                        currentList, indexImg, createPropertyDTO.getCodeProperty());
 
                 //Thay đổi property
                 property = propertyRepository.findByCodeProperty(createPropertyDTO.getCodeProperty())
@@ -88,8 +87,8 @@ public class PropertyService {
                 //Lưu propertyInfo
                 propertyInfoRepository.save(propertyInfo);
 
-                return new BaseResponseData(200, "Success", null);
             }
+            return new BaseResponseData(200, "Success", null);
         } catch (Exception e) {
             return new BaseResponseData(500, "Error", e.getMessage());
         }
@@ -141,9 +140,26 @@ public class PropertyService {
                             .url(image.getUrl())
                             .build()).toList();
             createPropertyDTO.setImageList(imageDTOS);
-                return new BaseResponseData(200, "Chi tiết tài sản hiển thị thành công", createPropertyDTO);
+            return new BaseResponseData(200, "Chi tiết tài sản hiển thị thành công", createPropertyDTO);
         }
         return new BaseResponseData(200, "Chi tiết tài sản hiển thị tất bại", null);
+    }
+
+    @Transactional
+    public BaseResponseData deleteProperty(String codeProperty) {
+        Optional<Property> property = propertyRepository.findByCodeProperty(codeProperty);
+        Optional<PropertyInfo> propertyInfo = propertyInfoRepository.findByCodeProperty(codeProperty);
+        List<Image> imageList = imageService.findAllByPropertyCode(codeProperty);
+        if (property.isEmpty()) {
+            return new BaseResponseData(500, "Tài sản không tồn tại", null);
+        }
+        if (propertyInfo.isEmpty()) {
+            return new BaseResponseData(500, "Tài sản chi tiết không tồn tại", null);
+        }
+        propertyRepository.delete(property.get());
+        propertyInfoRepository.delete(propertyInfo.get());
+        imageRepository.deleteAll(imageList);
+        return new BaseResponseData(200, "Xóa tài sản thành công", null);
     }
 }
 

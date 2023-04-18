@@ -134,7 +134,7 @@ public class Enums {
         }
     }
 
-    public  enum TypeAccountLever {
+    public enum TypeAccountLever {
         MIENPHI(0, "Miễn phí",1,0),
         TIETKIEM(1, "Tiết kiệm",20,100000),
         TIEUCHUAN(2,"Tiêu chuẩn",50,150000),
@@ -164,15 +164,37 @@ public class Enums {
 
         public Integer getDenominations() {return denominations;}
 
-        public static String checkValue(Integer code) {
+        public static String checkName(Integer code) {
             if (Objects.nonNull(code)) {
                 return Stream.of(TypeAccountLever.values())
                         .filter(color -> color.getCode().equals(code))
                         .map(TypeAccountLever::getName)
                         .findFirst()
-                        .orElseThrow(() -> new StoreException("TypeAccount not found with code: " + code));
+                        .orElseThrow(() -> new StoreException("TypeAccount not found with code " + code));
             }
             throw new StoreException("TypeAccount status is null");
+        }
+
+        public static Integer checkDenominations(Integer code) {
+            if (Objects.nonNull(code)) {
+                return Stream.of(TypeAccountLever.values())
+                        .filter(color -> color.getCode().equals(code))
+                        .map(TypeAccountLever::getDenominations)
+                        .findFirst()
+                        .orElseThrow(() -> new StoreException("TypeAccount not found with code: " + code));
+            }
+            throw new StoreException("TypeAccount.checkDenominations is null");
+        }
+
+        public static Integer checkCountNewsUpload(Integer code) {
+            if (Objects.nonNull(code)) {
+                return Stream.of(TypeAccountLever.values())
+                        .filter(color -> color.getCode().equals(code))
+                        .map(TypeAccountLever::getCountNewsUpload)
+                        .findFirst()
+                        .orElseThrow(() -> new StoreException("TypeAccount not found with code: " + code));
+            }
+            throw new StoreException("TypeAccount.checkCountNewsUpload status is null");
         }
 
 

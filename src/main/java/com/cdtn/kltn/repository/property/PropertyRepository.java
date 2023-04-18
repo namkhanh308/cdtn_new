@@ -88,4 +88,9 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
             "    from property p inner join propertyinfo pi on p.code_property = pi.code_property\n" +
             "    where p.code_property = :codeProperty",nativeQuery = true)
     Optional<PropertyDetailDataRespone> findPropertyByCodeProperty(@Param("codeProperty") String codeProperty);
+
+    @Query(value = "delete from propertyinfo where code_property = :codeProperty ;\n" +
+            "delete from image where property_code = :codeProperty ; \n" +
+            "delete from property where code_property = :codeProperty ;",nativeQuery = true)
+    void  deleteProperty(@Param("codeProperty") String codeProperty);
 }

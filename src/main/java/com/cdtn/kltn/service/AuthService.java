@@ -128,7 +128,7 @@ public class AuthService {
                                     .lastName(user.get().getLastName())
                                     .url(value.getUrl())
                                     .accountTypeLever(accountsLever.get().getAccountTypeLever())
-                                    .accountLeverTypeName(Enums.TypeAccountLever.checkValue(accountsLever.get().getAccountTypeLever()))
+                                    .accountLeverTypeName(Enums.TypeAccountLever.checkName(accountsLever.get().getAccountTypeLever()))
                                     .statusAccountLever(accountsLever.get().getStatus())
                                     .build())).orElseGet(() -> new BaseResponseData(200, "Dữ liệu client được trả ra thành công",
                             ClientInfoDTO.builder()
@@ -146,7 +146,7 @@ public class AuthService {
                                     .firstName(user.get().getFirstName())
                                     .lastName(user.get().getLastName())
                                     .accountTypeLever(accountsLever.get().getAccountTypeLever())
-                                    .accountLeverTypeName(Enums.TypeAccountLever.checkValue(accountsLever.get().getAccountTypeLever()))
+                                    .accountLeverTypeName(Enums.TypeAccountLever.checkName(accountsLever.get().getAccountTypeLever()))
                                     .statusAccountLever(accountsLever.get().getStatus())
                                     .build()));
                 }
