@@ -69,8 +69,6 @@ public class ClientService {
                 return new BaseResponseData(200, "Đăng ký thành công", null);
             }
         }
-
-
     }
 
     @Transactional

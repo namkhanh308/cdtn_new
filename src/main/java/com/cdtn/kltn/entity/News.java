@@ -17,11 +17,14 @@ public class News {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String typeAgency;
+    private String nameNews;
     private String codeProperty;
-    private String content;
+    private String address;
     private LocalDateTime dateCreate;
     private LocalDateTime dateExpiration;
     private Integer statusNews;
+    private LocalDateTime timeUpTopStart;
+    private LocalDateTime timeUpTopEnd;
+    private LocalDateTime statusUpTop;
 
 }

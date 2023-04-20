@@ -5,8 +5,13 @@ import com.cdtn.kltn.dto.accountlevel.request.AccountsLeverSwitchDTO;
 import com.cdtn.kltn.dto.base.response.BaseResponseData;
 import com.cdtn.kltn.entity.AccountsLever;
 import com.cdtn.kltn.entity.Client;
+import com.cdtn.kltn.entity.News;
+import com.cdtn.kltn.entity.Property;
+import com.cdtn.kltn.exception.StoreException;
 import com.cdtn.kltn.repository.accountlever.AccountsLeverRepository;
 import com.cdtn.kltn.repository.client.ClientRepository;
+import com.cdtn.kltn.repository.news.NewsRepository;
+import com.cdtn.kltn.repository.property.PropertyRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,23 +27,41 @@ public class AccountsLeverService {
 
     private final AccountsLeverRepository accountsLeverRepository;
     private final ClientRepository clientRepository;
+    private final NewsRepository newsRepository;
+    private final PropertyRepository propertyRepository;
 
-
+    @Transactional
     @Scheduled(fixedRate = 60000) // 60000ms = 1 phút
-    public void myMinuteTask() {
+    public void autoRunAccountReset() {
         List<AccountsLever> accountsLeverList = accountsLeverRepository.findAll();
         for (AccountsLever accountsLever : accountsLeverList) {
             if (LocalDateTime.now().isAfter(accountsLever.getStartDate())
                     && LocalDateTime.now().isBefore(accountsLever.getEndDate())) {
                 //check với số tin hiện tại
-
-
+                Integer countUpload = newsRepository.findCountNewsActiveByCodeClient(accountsLever.getCodeClient());
+                if(countUpload >= accountsLever.getCountNewsUpload()){
+                    accountsLever.setStatus(0);
+                }else {
+                    accountsLever.setStatus(1);
+                }
                 //end
             } else {
-                //check với số tin hiện tại
-
-
-                //end
+                //Lấy ra danh sách tin của client đó
+                List<News> newsList = newsRepository.findAllByClientCode(accountsLever.getCodeClient());
+                //Sửa lại status của tin
+                newsList.forEach(news -> news.setStatusNews(Enums.StatusNews.HETHAN.getCode()));
+                //Save lại danh sách tin
+                newsRepository.saveAll(newsList);
+                // Lấy ra danh sách tài sản của tin
+                List<Property> propertyList = newsList.stream()
+                        .map(news -> propertyRepository.findByCodeProperty(news.getCodeProperty())
+                                .orElseThrow(() -> new StoreException("Không tồn tại tài sản")))
+                        .toList();
+                //Sửa lại status của tài sản
+                propertyList.forEach(property -> property.setStatusProperty(Enums.StatusProperty.DACHINHSUA.getCode()));
+                //Save lại danh sách tài sản
+                propertyRepository.saveAll(propertyList);
+                //Set lại thuộc tính của cấp tài khoản
                 accountsLever.setStatus(1);
                 accountsLever.setAccountTypeLever(Enums.TypeAccountLever.TIETKIEM.getCode());
                 accountsLever.setStartDate(LocalDateTime.now());

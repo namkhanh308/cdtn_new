@@ -92,5 +92,5 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
     @Query(value = "delete from propertyinfo where code_property = :codeProperty ;\n" +
             "delete from image where property_code = :codeProperty ; \n" +
             "delete from property where code_property = :codeProperty ;",nativeQuery = true)
-    void  deleteProperty(@Param("codeProperty") String codeProperty);
+    void deleteProperty(@Param("codeProperty") String codeProperty);
 }

@@ -2,6 +2,7 @@ package com.cdtn.kltn.common;
 
 import com.cdtn.kltn.exception.StoreException;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -96,7 +97,8 @@ public class Enums {
         DACHINHSUA(2, "Đã chỉnh sửa"),
         DANGCHOTHUE(3,"Đang cho thuê"),
         DACHOTHUE(4,"Đã cho thuê"),
-        HUY(5,"Đã hủy");
+        DABIKHOA(5,"Đã bị khóa"),
+        HUY(6,"Đã hủy");
         private final Integer code;
         private final String name;
         StatusProperty(Integer code, String name) {
@@ -110,6 +112,17 @@ public class Enums {
 
         public String getName() {
             return name;
+        }
+
+        public static String checkName(Integer code){
+            if (Objects.nonNull(code)) {
+                return Stream.of(StatusProperty.values())
+                        .filter(status -> status.getCode().equals(code))
+                        .map(StatusProperty::getName)
+                        .findFirst()
+                        .orElseThrow(() -> new StoreException("TypeAccount not found with code " + code));
+            }
+            throw new StoreException("TypeAccount status is null");
         }
     }
 
@@ -198,6 +211,38 @@ public class Enums {
         }
 
 
+    }
+    public enum StatusNews{
+        DANGHOATDONG(1,"Đang hoạt động"),
+        HETHAN(2,"Đã hết hạn"),
+        DAHOANTHANH(3,"Đã hoàn thành"),
+        DAXOA(4,"Đã xóa");
+
+        private final Integer code;
+        private final String name;
+
+        StatusNews(Integer code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+        public String checkName(Integer code){
+            if(Objects.nonNull(code)){
+                return Stream.of(StatusNews.values())
+                        .filter(status -> status.code.equals(code))
+                        .map(StatusNews::getName)
+                        .findFirst()
+                        .orElseThrow(() -> new StoreException("StatusNews not found with code: " + code));
+            }
+            throw new StoreException("StatusNews.checkName status is null");
+        }
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 
 
