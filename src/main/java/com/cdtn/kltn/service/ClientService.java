@@ -1,11 +1,13 @@
 package com.cdtn.kltn.service;
 
 import com.cdtn.kltn.dto.base.response.BaseResponseData;
+import com.cdtn.kltn.dto.client.mapper.ClientMapper;
 import com.cdtn.kltn.dto.client.request.RechargeDTO;
 import com.cdtn.kltn.dto.client.request.RegistrationClientDTO;
 import com.cdtn.kltn.entity.Client;
 import com.cdtn.kltn.entity.Image;
 import com.cdtn.kltn.entity.User;
+import com.cdtn.kltn.exception.StoreException;
 import com.cdtn.kltn.repository.client.ClientRepository;
 import com.cdtn.kltn.repository.image.ImageRepository;
 import com.cdtn.kltn.repository.user.UserRepository;
@@ -27,66 +29,50 @@ public class ClientService {
 
     private final ImageService imageService;
 
+    private final ClientMapper clientMapper;
+
 
     @Transactional
-    public BaseResponseData saveClient(RegistrationClientDTO registrationClientDTO) {
-        Optional<Client> client = clientRepository.findByCodeClient(registrationClientDTO.getCodeClient());
-        if (client.isEmpty()) {
-            return new BaseResponseData(500, "Client không tồn tại", null);
+    public void saveClient(RegistrationClientDTO registrationClientDTO) {
+        Client client = clientRepository.findByCodeClient(registrationClientDTO.getCodeClient())
+                .orElseThrow(() -> new StoreException("Client không tồn tại"));
+        User user = userRepository.findById(client.getUserId())
+                .orElseThrow(() -> new StoreException("User không tồn tại"));
+        Optional<Image> image = imageRepository.findByCodeClient(client.getCodeClient());
+        //Set lại thông tin image
+        if (image.isEmpty()) {
+            imageRepository.save(Image.builder().codeClient(client
+                    .getCodeClient())
+                    .codeImage("IMAGE_" + imageService.getIndex() + 1)
+                    .url(registrationClientDTO.getUrl()).level(1)
+                    .build());
         } else {
-            Optional<User> user = userRepository.findById(client.get().getUserId());
-            if (user.isEmpty()) {
-                return new BaseResponseData(500, "User không tồn tại", null);
-            } else {
-                Optional<Image> image = imageRepository.findByCodeClient(client.get().getCodeClient());
-                //Set lại thông tin image
-                if (image.isEmpty()) {
-                    imageRepository.save(Image.builder().codeClient(client.get()
-                            .getCodeClient())
-                            .codeImage("IMAGE_" + imageService.getIndex() + 1)
-                            .url(registrationClientDTO.getUrl()).level(1)
-                            .build());
-                } else {
-                    image.get().setUrl(registrationClientDTO.getUrl());
-                    imageRepository.save(image.get());
-                }
-                //Set lại thông tin client
-                client.get().setProvinceCode(registrationClientDTO.getProvinceCode());
-                client.get().setDistrictCode(registrationClientDTO.getDistrictCode());
-                client.get().setWardsCode(registrationClientDTO.getWardsCode());
-                client.get().setIntroduces(registrationClientDTO.getIntroduces());
-                client.get().setPhone(registrationClientDTO.getPhone());
-                client.get().setTypeLoan(registrationClientDTO.getTypeLoan());
-                client.get().setPassport(registrationClientDTO.getPassport());
-                client.get().setFullName(registrationClientDTO.getFirstName() + " " + registrationClientDTO.getLastName());
-                //Set lại thông tin user
-                user.get().setFirstName(registrationClientDTO.getFirstName());
-                user.get().setLastName(registrationClientDTO.getLastName());
-                //Save
-                clientRepository.save(client.get());
-                userRepository.save(user.get());
-
-                return new BaseResponseData(200, "Đăng ký thành công", null);
-            }
+            image.get().setUrl(registrationClientDTO.getUrl());
+            imageRepository.save(image.get());
         }
+        //Set lại thông tin client
+        client = clientMapper.updateClient(client,registrationClientDTO);
+        //Set lại thông tin user
+        user.setFirstName(registrationClientDTO.getFirstName());
+        user.setLastName(registrationClientDTO.getLastName());
+        //Save
+        clientRepository.save(client);
+        userRepository.save(user);
     }
 
     @Transactional
-    public BaseResponseData findByCodeClient(String codeClient) {
-        Optional<Client> client = clientRepository.findByCodeClient(codeClient);
-        return client.isPresent() ? new BaseResponseData(200, "Hiển thị thông tin khách hàng thành công", client) : new BaseResponseData(500, "Hiển thị thông tin khách hàng thất bại", null);
+    public Client findByCodeClient(String codeClient) {
+        return clientRepository.findByCodeClient(codeClient)
+                .orElseThrow(()-> new StoreException("Hiển thị thông tin khách hàng thất bại"));
     }
 
     @Transactional
-    public BaseResponseData rechargeClient(RechargeDTO rechargeDTO) {
-        Optional<Client> client = clientRepository.findByCodeClient(rechargeDTO.getCodeClient());
-        if (client.isEmpty()) {
-            return new BaseResponseData(500, "Client không tồn tại", null);
-        } else {
-            client.get().setMoney(String.valueOf(Long.parseLong(client.get().getMoney()) + rechargeDTO.getMoney()));
-            clientRepository.save(client.get());
-            return new BaseResponseData(200, "Nạp thẻ thành công", client);
-        }
+    public Client rechargeClient(RechargeDTO rechargeDTO) {
+        Client client = clientRepository.findByCodeClient(rechargeDTO.getCodeClient())
+                .orElseThrow(() -> new StoreException("Client không tồn tại"));
+        client.setMoney(String.valueOf(Long.parseLong(client.getMoney()) + rechargeDTO.getMoney()));
+        clientRepository.save(client);
+        return client;
     }
 
 }

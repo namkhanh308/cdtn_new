@@ -6,8 +6,6 @@ import com.cdtn.kltn.entity.News;
 import com.cdtn.kltn.entity.Property;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-
 @Component
 public class NewsMapper {
 

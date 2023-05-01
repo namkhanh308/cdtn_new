@@ -1,7 +1,6 @@
 package com.cdtn.kltn.service;
 
 import com.cdtn.kltn.common.UltilsPage;
-import com.cdtn.kltn.dto.base.response.BaseResponseData;
 import com.cdtn.kltn.dto.pagination.PagingResponeDTO;
 import com.cdtn.kltn.dto.property.mapper.ImageMapperProperty;
 import com.cdtn.kltn.dto.property.mapper.PropertyMapper;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,61 +38,56 @@ public class PropertyService {
     private final ImageMapperProperty imageMapperProperty;
 
     @Transactional
-    public BaseResponseData createProperty(CreatePropertyDTO createPropertyDTO) {
-        try {
-            Property property;
-            PropertyInfo propertyInfo;
-            List<Image> list;
+    public void createProperty(CreatePropertyDTO createPropertyDTO) {
+        Property property;
+        PropertyInfo propertyInfo;
+        List<Image> list;
 
-            //thêm mới
-            if (Objects.isNull(createPropertyDTO.getCodeProperty())) {
-                String codeProperty = String.valueOf(getIndex() + 1);
-                Long indexImg = imageService.getIndex();
-                property = propertyMapper.createProperty(createPropertyDTO, codeProperty);
-                propertyInfo = propertyInfoMapper.createPropertyInfo(createPropertyDTO, codeProperty);
-                list = imageMapperProperty.createListImage(createPropertyDTO.getImageList(), codeProperty, indexImg);
-                // Lưu
-                propertyRepository.save(property);
-                propertyInfoRepository.save(propertyInfo);
-                imageRepository.saveAll(list);
-            } else {
-                Long indexImg = imageService.getIndex();
-                //Thay đổi image
-                List<Image> currentList = imageService.findAllByPropertyCode(createPropertyDTO.getCodeProperty());
-                List<Image> imageListDelete = imageMapperProperty.updateListDelete(
-                        createPropertyDTO.getImageList(),
-                        currentList);
-                List<Image> newList = imageMapperProperty.updateList(createPropertyDTO.getImageList(),
-                        currentList, indexImg, createPropertyDTO.getCodeProperty());
+        //thêm mới
+        if (Objects.isNull(createPropertyDTO.getCodeProperty())) {
+            String codeProperty = String.valueOf(getIndex() + 1);
+            Long indexImg = imageService.getIndex();
+            property = propertyMapper.createProperty(createPropertyDTO, codeProperty);
+            propertyInfo = propertyInfoMapper.createPropertyInfo(createPropertyDTO, codeProperty);
+            list = imageMapperProperty.createListImage(createPropertyDTO.getImageList(), codeProperty, indexImg);
+            // Lưu
+            propertyRepository.save(property);
+            propertyInfoRepository.save(propertyInfo);
+            imageRepository.saveAll(list);
+        } else {
+            Long indexImg = imageService.getIndex();
+            //Thay đổi image
+            List<Image> currentList = imageService.findAllByPropertyCode(createPropertyDTO.getCodeProperty());
+            List<Image> imageListDelete = imageMapperProperty.updateListDelete(
+                    createPropertyDTO.getImageList(),
+                    currentList);
+            List<Image> newList = imageMapperProperty.updateList(createPropertyDTO.getImageList(),
+                    currentList, indexImg, createPropertyDTO.getCodeProperty());
 
-                //Thay đổi property
-                property = propertyRepository.findByCodeProperty(createPropertyDTO.getCodeProperty())
-                        .orElseThrow(() -> new StoreException("Property not found with id " +
-                                createPropertyDTO.getCodeProperty()));
-                propertyMapper.updateProperty(createPropertyDTO, property);
+            //Thay đổi property
+            property = propertyRepository.findByCodeProperty(createPropertyDTO.getCodeProperty())
+                    .orElseThrow(() -> new StoreException("Property not found with id " +
+                            createPropertyDTO.getCodeProperty()));
+            propertyMapper.updateProperty(createPropertyDTO, property);
 
-                //Thay đổi propertyInfor
-                propertyInfo = propertyInfoRepository.findByCodeProperty(createPropertyDTO.getCodeProperty()).get();
-                propertyInfoMapper.updatePropertyInfo(createPropertyDTO, propertyInfo);
+            //Thay đổi propertyInfor
+            propertyInfo = propertyInfoRepository.
+                    findByCodeProperty(createPropertyDTO.getCodeProperty()).orElseThrow(() -> new StoreException("Không tồn tài tài sản chi tiết"));
+            propertyInfoMapper.updatePropertyInfo(createPropertyDTO, propertyInfo);
 
-                //lưu image
-                imageRepository.deleteAll(imageListDelete);
-                imageRepository.saveAll(newList);
+            //lưu image
+            imageRepository.deleteAll(imageListDelete);
+            imageRepository.saveAll(newList);
 
-                //Lưu property
-                propertyRepository.save(property);
+            //Lưu property
+            propertyRepository.save(property);
 
-                //Lưu propertyInfo
-                propertyInfoRepository.save(propertyInfo);
-
-            }
-            return new BaseResponseData(200, "Success", null);
-        } catch (Exception e) {
-            return new BaseResponseData(500, "Error", e.getMessage());
+            //Lưu propertyInfo
+            propertyInfoRepository.save(propertyInfo);
         }
     }
 
-    public BaseResponseData findAllPropertyManager(PropertySearchDTO propertySearchDTO) {
+    public PagingResponeDTO findAllPropertyManager(PropertySearchDTO propertySearchDTO) {
         // Lấy ra offset, page
         PagingResponeDTO pagingResponeDTO = UltilsPage.paging(propertySearchDTO);
         // Lấy ra danh sách theo điều kiện tìm kiếm
@@ -113,53 +106,46 @@ public class PropertyService {
         //xóa bỏ hàng chứa totalRecord
         propertyDatumSearchRespones.removeIf(property -> StringUtils.isEmpty(property.getCodeProperty()));
         pagingResponeDTO.setData(propertyDatumSearchRespones);
-
-        return !propertyDatumSearchRespones.isEmpty() ?
-                new BaseResponseData(200, "Danh sách tài sản hiển thị thành công", pagingResponeDTO) :
-                new BaseResponseData(500, "Danh sách tài sản hiển thị tất bại", null);
+        if (propertyDatumSearchRespones.isEmpty()) {
+            throw new StoreException("Danh sách tài sản hiển thị tất bại");
+        }
+        return pagingResponeDTO;
     }
 
     public Long getIndex() {
         return Objects.isNull(propertyRepository.getIndex()) ? 0 : propertyRepository.getIndex();
     }
 
-    public BaseResponseData findPropertyDetail(String codeProperty) {
+    public CreatePropertyDTO findPropertyDetail(String codeProperty) {
         //Lấy ra thông tin tài sản
-        Optional<PropertyDetailDataRespone> propertyDetailDataResponeList =
-                propertyRepository.findPropertyByCodeProperty(codeProperty);
-        if (propertyDetailDataResponeList.isPresent()) {
-            // Set lại các thuộc tính response
-            CreatePropertyDTO createPropertyDTO =
-                    propertyMapper.setDataPropertyDetailDTO(propertyDetailDataResponeList.get());
-            // Lấy ra danh sách ảnh theo codeProperty
-            List<Image> imageList = imageService.findAllByPropertyCode(codeProperty);
-            // Biến đổi lại list ảnh theo đối tượng respone
-            List<PropertyImageDTO> imageDTOS = imageList.stream().map(
-                    image -> PropertyImageDTO.builder()
-                            .codeImage(image.getCodeImage())
-                            .url(image.getUrl())
-                            .build()).toList();
-            createPropertyDTO.setImageList(imageDTOS);
-            return new BaseResponseData(200, "Chi tiết tài sản hiển thị thành công", createPropertyDTO);
-        }
-        return new BaseResponseData(200, "Chi tiết tài sản hiển thị tất bại", null);
+        PropertyDetailDataRespone propertyDetailDataResponeList =
+                propertyRepository.findPropertyByCodeProperty(codeProperty)
+                        .orElseThrow(() -> new StoreException("Chi tiết tài sản hiển thị tất bại"));
+        // Set lại các thuộc tính response
+        CreatePropertyDTO createPropertyDTO =
+                propertyMapper.setDataPropertyDetailDTO(propertyDetailDataResponeList);
+        // Lấy ra danh sách ảnh theo codeProperty
+        List<Image> imageList = imageService.findAllByPropertyCode(codeProperty);
+        // Biến đổi lại list ảnh theo đối tượng respone
+        List<PropertyImageDTO> imageDTOS = imageList.stream().map(
+                image -> PropertyImageDTO.builder()
+                        .codeImage(image.getCodeImage())
+                        .url(image.getUrl())
+                        .build()).toList();
+        createPropertyDTO.setImageList(imageDTOS);
+        return createPropertyDTO;
     }
 
     @Transactional
-    public BaseResponseData deleteProperty(String codeProperty) {
-        Optional<Property> property = propertyRepository.findByCodeProperty(codeProperty);
-        Optional<PropertyInfo> propertyInfo = propertyInfoRepository.findByCodeProperty(codeProperty);
+    public void deleteProperty(String codeProperty) {
+        Property property = propertyRepository.findByCodeProperty(codeProperty)
+                .orElseThrow(() -> new StoreException("Tài sản không tồn tại"));
+        PropertyInfo propertyInfo = propertyInfoRepository.findByCodeProperty(codeProperty)
+                .orElseThrow(() -> new StoreException("Tài sản chi tiết không tồn tại"));
         List<Image> imageList = imageService.findAllByPropertyCode(codeProperty);
-        if (property.isEmpty()) {
-            return new BaseResponseData(500, "Tài sản không tồn tại", null);
-        }
-        if (propertyInfo.isEmpty()) {
-            return new BaseResponseData(500, "Tài sản chi tiết không tồn tại", null);
-        }
-        propertyRepository.delete(property.get());
-        propertyInfoRepository.delete(propertyInfo.get());
+        propertyRepository.delete(property);
+        propertyInfoRepository.delete(propertyInfo);
         imageRepository.deleteAll(imageList);
-        return new BaseResponseData(200, "Xóa tài sản thành công", null);
     }
 }
 

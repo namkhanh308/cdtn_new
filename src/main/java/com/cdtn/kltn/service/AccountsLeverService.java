@@ -78,58 +78,49 @@ public class AccountsLeverService {
     }
 
     @Transactional
-    public BaseResponseData switchAccountLever(AccountsLeverSwitchDTO accountsLeverSwitchDTO) {
+    public void switchAccountLever(AccountsLeverSwitchDTO accountsLeverSwitchDTO) {
         //lấy ra giá trị loại tài khoản
         Integer denominations = Enums.TypeAccountLever.checkDenominations(accountsLeverSwitchDTO.getAccountTypeLever());
         //Lấy ra thông tin loại tài khoản hiện tại của người dùng
-        Optional<AccountsLever> accountsLever = accountsLeverRepository.findByCodeClient(accountsLeverSwitchDTO.getCodeClient());
+        AccountsLever accountsLever = accountsLeverRepository.findByCodeClient(accountsLeverSwitchDTO.getCodeClient())
+                .orElseThrow(() -> new StoreException("Cấp tài khoản không tồn tại"));
         //Kiểm tra thông tin tài khoản tiền của client
-        Optional<Client> client = clientRepository.findByCodeClient(accountsLeverSwitchDTO.getCodeClient());
-
-        if (client.isEmpty()) {
-            return new BaseResponseData(500, "Tài khoản không tồn tại", null);
-        } else {
-            if (accountsLever.isEmpty()) {
-                return new BaseResponseData(500, "Cấp tài khoản không tồn tại", null);
-            } else {
-                //Kiểm tra thông tin tài khoản của client
-                if (Integer.parseInt(client.get().getMoney()) >=
-                        (denominations * accountsLeverSwitchDTO.getCountMonth())) {
-                    // kiểm tra gói hiện tại còn hiệu lực không
-                    if (LocalDateTime.now().isAfter(accountsLever.get().getStartDate())
-                            && LocalDateTime.now().isBefore(accountsLever.get().getEndDate())) {
-                        // kiểm tra gói hiện tại đang đăng ký là gì:
-                        if (accountsLever.get().getAccountTypeLever().equals(accountsLeverSwitchDTO.getAccountTypeLever())) {
-                            accountsLever.get().setStartDate(LocalDateTime.now());
-                            accountsLever.get().setEndDate(accountsLever.get().
-                                    getEndDate().plusDays(30L * accountsLeverSwitchDTO.getCountMonth()));
-                        } else {
-                            accountsLever.get().setStartDate(LocalDateTime.now());
-                            accountsLever.get().setEndDate(LocalDateTime.now().
-                                    plusDays(30L * accountsLeverSwitchDTO.getCountMonth()));
-                        }
-                    } else {
-                        accountsLever.get().setStartDate(LocalDateTime.now());
-                        accountsLever.get().setEndDate(LocalDateTime.now().plusDays(30L * accountsLeverSwitchDTO.getCountMonth()));
-                    }
-                    //set lại thuộc tính khác của accountLever
-                    accountsLever.get().setAccountTypeLever(accountsLever.get().getAccountTypeLever() - denominations);
-                    accountsLever.get().setStatus(1);
-                    accountsLever.get().setAccountTypeLever(accountsLeverSwitchDTO.getAccountTypeLever());
-                    accountsLever.get().setCountNewsUpload(Enums.TypeAccountLever.
-                            checkCountNewsUpload(accountsLeverSwitchDTO.getAccountTypeLever()));
-                    //save lại thông tin cấp tài khoản
-                    accountsLeverRepository.save(accountsLever.get());
-                    //save lại thông tin tiền của client
-                    client.get().setMoney(String.valueOf(Integer.parseInt(client.get().getMoney()) - (denominations * accountsLeverSwitchDTO.getCountMonth())));
-                    clientRepository.save(client.get());
-
-                    return new BaseResponseData(200, "Chuyển đổi gói tài khoản thành công", null);
+        Client client = clientRepository.findByCodeClient(accountsLeverSwitchDTO.getCodeClient())
+                .orElseThrow(() -> new StoreException("Tài khoản không tồn tại: "));
+        //Kiểm tra thông tin tài khoản của client
+        if (Integer.parseInt(client.getMoney()) >= (denominations * accountsLeverSwitchDTO.getCountMonth())) {
+            // kiểm tra gói hiện tại còn hiệu lực không
+            if (LocalDateTime.now().isAfter(accountsLever.getStartDate())
+                    && LocalDateTime.now().isBefore(accountsLever.getEndDate())) {
+                // kiểm tra gói hiện tại đang đăng ký là gì:
+                if (accountsLever.getAccountTypeLever().equals(accountsLeverSwitchDTO.getAccountTypeLever())) {
+                    accountsLever.setStartDate(LocalDateTime.now());
+                    accountsLever.setEndDate(accountsLever.
+                            getEndDate().plusDays(30L * accountsLeverSwitchDTO.getCountMonth()));
                 } else {
-                    return new BaseResponseData(500, "Số dư trong tài khoản hiện không đủ để chuyển " +
-                            "đổi sang gói tài khoản này", null);
+                    accountsLever.setStartDate(LocalDateTime.now());
+                    accountsLever.setEndDate(LocalDateTime.now().
+                            plusDays(30L * accountsLeverSwitchDTO.getCountMonth()));
                 }
+            } else {
+                accountsLever.setStartDate(LocalDateTime.now());
+                accountsLever.setEndDate(LocalDateTime.now().plusDays(30L * accountsLeverSwitchDTO.getCountMonth()));
             }
+            //set lại thuộc tính khác của accountLever
+            accountsLever.setAccountTypeLever(accountsLever.getAccountTypeLever() - denominations);
+            accountsLever.setStatus(1);
+            accountsLever.setAccountTypeLever(accountsLeverSwitchDTO.getAccountTypeLever());
+            accountsLever.setCountNewsUpload(Enums.TypeAccountLever.
+                    checkCountNewsUpload(accountsLeverSwitchDTO.getAccountTypeLever()));
+            //save lại thông tin cấp tài khoản
+            accountsLeverRepository.save(accountsLever);
+            //save lại thông tin tiền của client
+            client.setMoney(String.valueOf(Integer.parseInt(client.getMoney()) - (denominations * accountsLeverSwitchDTO.getCountMonth())));
+            clientRepository.save(client);
+        } else {
+            throw new StoreException("Số dư trong tài khoản hiện không đủ để chuyển " +
+                    "đổi sang gói tài khoản này");
         }
     }
 }
+

@@ -25,7 +25,7 @@ public class NewsController {
         return ResponseEntity.ok(newsService.deleteNews(id));
     }
 
-    @GetMapping("/loan/findNewsDetail")
+    @GetMapping("/findNewsDetail")
     public ResponseEntity<BaseResponseData> findNewsDetail(@RequestParam Long id) {
         return ResponseEntity.ok(newsService.findNewsDetail(id));
     }
