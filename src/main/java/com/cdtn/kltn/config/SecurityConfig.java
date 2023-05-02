@@ -1,4 +1,4 @@
-package com.cdtn.kltn.security;
+package com.cdtn.kltn.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

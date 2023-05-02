@@ -34,5 +34,10 @@ public class CommonController {
     public BaseResponseData findAllTypeAccount() {
         return commonService.getTypeAccount();
     }
+
+    @GetMapping("/findAllStatusNews")
+    public BaseResponseData findAllStatusNews() {
+        return commonService.getStatusNews();
+    }
 }
 

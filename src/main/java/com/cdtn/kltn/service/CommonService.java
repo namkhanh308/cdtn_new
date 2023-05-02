@@ -45,4 +45,13 @@ public class CommonService {
     }
 
 
+    public BaseResponseData getStatusNews(){
+        List<OptionDTO> list = new ArrayList<>();
+        for (Enums.StatusNews c: Enums.StatusNews.values()) {
+            list.add(new OptionDTO(c.getCode().toString(), c.getName()));
+        }
+        return  new BaseResponseData(200, "Hiển thị danh mục trạng thái tin thành công", list);
+    }
+
+
 }

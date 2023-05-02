@@ -45,28 +45,4 @@ public class CdtnApplication {
         return new CorsFilter(urlBasedCorsConfigurationSource);
     }
 
-
-//    @Bean
-//    CommandLineRunner runner(UserService userService) {
-//        return args -> {
-//            userService.saveUser(User.builder()
-//                    .fullName("Nguyen Dinh Loc")
-//                    .userName("ngdinhloc2000@gmail.com")
-//                    .password("12345")
-//                    .role(null)
-//                    .build());
-//
-//            userService.addRoleToUser("ngdinhloc2000@gmail.com", "ROLE_COMPANY");
-
-//            userService.saveUser(User.builder()
-//                    .fullName("Do Nam Khanh")
-//                    .userName("khanhdn@gmail.com")
-//                    .password("12345")
-//                    .role(null)
-//                    .build());
-//
-//            userService.addRoleToUser("khanhdn@gmail.com", "ROLE_CLIENT");
-//        };
-//    }
-
 }

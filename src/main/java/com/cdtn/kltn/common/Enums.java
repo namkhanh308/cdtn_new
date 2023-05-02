@@ -225,7 +225,7 @@ public class Enums {
             this.code = code;
             this.name = name;
         }
-        public String checkName(Integer code){
+        public static String checkName(Integer code){
             if(Objects.nonNull(code)){
                 return Stream.of(StatusNews.values())
                         .filter(status -> status.code.equals(code))
@@ -237,6 +237,28 @@ public class Enums {
         }
 
         public Integer getCode() {
+            return code;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+
+    public enum StatusUpTop{
+        DANGHOATDONG(1,"Đang hoạt động"),
+        HETHAN(2,"Đã hết hạn");
+
+        private final Long code;
+        private final String name;
+
+        StatusUpTop(long code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
+        public Long getCode() {
             return code;
         }
 

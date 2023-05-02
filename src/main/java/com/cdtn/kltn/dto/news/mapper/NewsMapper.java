@@ -2,8 +2,8 @@ package com.cdtn.kltn.dto.news.mapper;
 
 import com.cdtn.kltn.common.Enums;
 import com.cdtn.kltn.dto.news.request.CreateNewsDTO;
+import com.cdtn.kltn.dto.news.request.PushTopDTO;
 import com.cdtn.kltn.entity.News;
-import com.cdtn.kltn.entity.Property;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,6 +17,7 @@ public class NewsMapper {
                     .codeProperty(createNewsDTO.getCodeProperty())
                     .statusNews(Enums.StatusNews.DANGHOATDONG.getCode())
                     .address(address)
+                    .statusUpTop(Enums.StatusUpTop.HETHAN.getCode())
                     .build();
     }
 
@@ -28,5 +29,12 @@ public class NewsMapper {
                 .id(news.getId())
                 .nameNews(news.getNameNews())
                 .build();
+    }
+
+    public News pushTopNews(PushTopDTO pushTopDTO, News news){
+        news.setTimeUpTopStart(pushTopDTO.getTimeUpTopStart());
+        news.setTimeUpTopEnd(pushTopDTO.getTimeUpTopEnd());
+        news.setStatusUpTop(Enums.StatusUpTop.DANGHOATDONG.getCode());
+        return news;
     }
 }

@@ -72,11 +72,6 @@ public class AccountsLeverService {
         accountsLeverRepository.saveAll(accountsLeverList);
     }
 
-
-    public AccountsLever save(AccountsLever accountsLever) {
-        return accountsLeverRepository.save(accountsLever);
-    }
-
     @Transactional
     public void switchAccountLever(AccountsLeverSwitchDTO accountsLeverSwitchDTO) {
         //lấy ra giá trị loại tài khoản

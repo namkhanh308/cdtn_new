@@ -1,4 +1,4 @@
-package com.cdtn.kltn.security;
+package com.cdtn.kltn.config;
 
 import com.cdtn.kltn.service.JwtService;
 import com.cdtn.kltn.service.UserDetailServicesImpl;
