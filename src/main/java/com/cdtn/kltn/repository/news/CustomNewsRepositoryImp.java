@@ -2,7 +2,7 @@ package com.cdtn.kltn.repository.news;
 
 import com.cdtn.kltn.common.Enums;
 import com.cdtn.kltn.common.QueryJdbcUltils;
-import com.cdtn.kltn.common.UltilsPage;
+import com.cdtn.kltn.common.UtilsPage;
 import com.cdtn.kltn.dto.news.request.ManagerNewsSearchDTO;
 import com.cdtn.kltn.dto.news.respone.ManagerNewsSearchRespone;
 import com.cdtn.kltn.exception.StoreException;
@@ -36,15 +36,15 @@ public class CustomNewsRepositoryImp implements CustomNewsRepository {
                                     .id(rs.getLong("id"))
                                     .address(rs.getString("address"))
                                     .statusNews(Enums.StatusNews.checkName(rs.getInt("statusNews")))
-                                    .dateCreate(LocalDateTime.parse(rs.getString("dateCreate"),dateTimeFormatter))
-                                    .dateExpiration(LocalDateTime.parse(rs.getString("dateExpiration"),dateTimeFormatter))
+                                    .dateCreate(LocalDateTime.parse(rs.getString("dateCreate"), dateTimeFormatter))
+                                    .dateExpiration(LocalDateTime.parse(rs.getString("dateExpiration"), dateTimeFormatter))
                                     .url(rs.getString("url"))
                                     .nameNews(rs.getString("nameNews"))
                                     .build()
                     );
-            return UltilsPage.getPageJdbc(managerNewsSearchResponeList,
-                                            managerNewsSearchDTO.getPage(),
-                                            managerNewsSearchDTO.getRecords());
+            return UtilsPage.getPageJdbc(managerNewsSearchResponeList,
+                    managerNewsSearchDTO.getPage(),
+                    managerNewsSearchDTO.getRecords());
 
         } catch (Exception e) {
             throw new StoreException(e.getMessage());
@@ -56,21 +56,25 @@ public class CustomNewsRepositoryImp implements CustomNewsRepository {
 
         String select =
                 """
-                select
-                    n.id as id,
-                    n.name_news as nameNews,
-                    n.date_create as dateCreate,
-                    n.date_expiration as dateExpiration,
-                    n.status_news as statusNews,
-                    (select url from image where image.property_code = n.code_property and level = 2 limit 1) as url,
-                    n.address as address
-                    from news n
-                    join property p on n.code_property = p.code_property and n.status_news <> 4  \s \s""";
+                        select
+                            n.id as id,
+                            n.name_news as nameNews,
+                            n.date_create as dateCreate,
+                            n.date_expiration as dateExpiration,
+                            n.status_news as statusNews,
+                            (select url from image where image.property_code = n.code_property and level = 2 limit 1) as url,
+                            n.address as address
+                            from news n
+                            join property p on n.code_property = p.code_property and n.status_news <> 4  \s \s""";
 
         List<String> whereList = new ArrayList<>();
 
         if (StringUtils.isNotBlank(form.getNameNews())) {
             whereList.add("n.name_news like :nameNews ");
+        }
+
+        if (StringUtils.isNotBlank(form.getCodeClient())) {
+            whereList.add("p.code_client = :codeClient ");
         }
 
         if (StringUtils.isNotBlank(form.getCodeTypeProperty())) {
@@ -86,7 +90,7 @@ public class CustomNewsRepositoryImp implements CustomNewsRepository {
 
         if (Objects.nonNull(form.getDateCreate()) && Objects.nonNull(form.getDateExpiration())) {
             whereList.add("n.date_create >= :dateCreate and n.date_create <= :dateExpiration ");
-        } else if (Objects.nonNull(form.getDateCreate())){
+        } else if (Objects.nonNull(form.getDateCreate())) {
             whereList.add("n.date_create >= :dateCreate");
         } else if (Objects.nonNull(form.getDateExpiration())) {
             whereList.add("n.date_create <= :dateExpiration ");
@@ -120,7 +124,11 @@ public class CustomNewsRepositoryImp implements CustomNewsRepository {
         Map<String, Object> map = new HashMap<>();
 
         if (StringUtils.isNotBlank(form.getNameNews())) {
-            map.put("nameNews", form.getNameNews() + "%");
+            map.put("nameNews", "%" + form.getNameNews() + "%");
+        }
+
+        if (StringUtils.isNotBlank(form.getCodeClient())) {
+            map.put("codeClient", form.getCodeClient());
         }
 
         if (Objects.nonNull(form.getStatusNews())) {

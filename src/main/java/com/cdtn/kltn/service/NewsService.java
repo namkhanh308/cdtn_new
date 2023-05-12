@@ -47,8 +47,7 @@ public class NewsService {
         AccountsLever accountsLever = accountsLeverRepository.findByCodeClient(property.getCodeClient())
                 .orElseThrow(() -> new StoreException("Không tìm cấp tài khoản"));
         //thêm mới
-        Integer countNews = newsRepository.findCountNewsActiveByCodeClient(property.getCodeClient());
-        if (countNews >= accountsLever.getCountNewsUpload()) {
+        if (Boolean.FALSE.equals(checkCountNewsPosted(property, accountsLever, createNewsDTO))) {
             accountsLever.setStatus(0);
             accountsLeverRepository.save(accountsLever);
             throw new StoreException("Số lượt đăng của bạn đã đạt giới hạn." +
@@ -73,12 +72,12 @@ public class NewsService {
         } else {
             News news = newsRepository.findById(createNewsDTO.getId())
                     .orElseThrow(() -> new StoreException("Không tìn thấy tin nào"));
-            if(news.getStatusNews().equals(Enums.StatusNews.DANGHOATDONG.getCode())){
+            if (news.getStatusNews().equals(Enums.StatusNews.DANGHOATDONG.getCode())) {
                 throw new StoreException("Tin đang đăng không thể chỉnh sửa. " +
                         "Hãy hủy tin rồi thực hiện lại");
             }
             if (property.getStatusProperty().equals(Enums.StatusProperty.DACHINHSUA.getCode()) ||
-                            property.getStatusProperty().equals(Enums.StatusProperty.MOITAO.getCode())){
+                    property.getStatusProperty().equals(Enums.StatusProperty.MOITAO.getCode())) {
                 news.setNameNews(createNewsDTO.getNameNews());
                 news.setDateCreate(createNewsDTO.getDateCreate());
                 if (news.getDateExpiration().isAfter(accountsLever.getEndDate())) {
@@ -89,7 +88,7 @@ public class NewsService {
 
                 property.setStatusProperty(Enums.StatusProperty.DANGCHOTHUE.getCode());
                 propertyRepository.save(property);
-            }else {
+            } else {
                 throw new StoreException("Tài sản đã được tạo tin rồi");
             }
         }
@@ -160,6 +159,24 @@ public class NewsService {
     }
 
 
+    public News findNewsDetail(Long id) {
+        return newsRepository.findById(id)
+                .orElseThrow(() -> new StoreException("Không tìm thấy tin nào"));
+    }
+
+    public Page<ManagerNewsSearchRespone> findAllNewsManager(ManagerNewsSearchDTO managerNewsSearchDTO) {
+        return customNewsRepositoryImp.findAllNewsManager(managerNewsSearchDTO);
+    }
+
+    public Boolean checkCountNewsPosted(Property property, AccountsLever accountsLever, CreateNewsDTO createNewsDTO) {
+        Integer countNews = newsRepository.findCountNewsActiveByCodeClient(property.getCodeClient());
+        if (Objects.isNull(createNewsDTO.getId())) {
+            return countNews < accountsLever.getCountNewsUpload();
+        } else {
+            return countNews <= accountsLever.getCountNewsUpload();
+        }
+    }
+
     public String getAddress(Property property) {
         StringBuilder addressName = new StringBuilder();
         Optional<Province> province = provinceRepository.findByProvinceCode(property.getProvinceCode());
@@ -175,16 +192,6 @@ public class NewsService {
             addressName.append(province.get().getProvinceName());
         }
         return addressName.toString();
-    }
-
-    public CreateNewsDTO findNewsDetail(Long id) {
-        News news = newsRepository.findById(id)
-                .orElseThrow(() -> new StoreException("Không tìm thấy tin nào"));
-        return newsMapper.createNewsDetailRespones(news);
-    }
-
-    public List<ManagerNewsSearchRespone> findAllNewsManager(ManagerNewsSearchDTO managerNewsSearchDTO) {
-        return customNewsRepositoryImp.findAllNewsManager(managerNewsSearchDTO).getContent();
     }
 
 }

@@ -17,6 +17,7 @@ public class ManagerNewsSearchDTO {
     private Integer statusNews;
     private String codeTypeProperty;
     private String codeCateTypePropertyCategory;
+    private String codeClient;
     @NotNull
     private Integer page;
     @NotNull

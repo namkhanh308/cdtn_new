@@ -3,7 +3,6 @@ package com.cdtn.kltn.dto.news.request;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
 
 import java.time.LocalDateTime;
 

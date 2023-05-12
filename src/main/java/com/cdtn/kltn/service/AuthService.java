@@ -2,10 +2,11 @@ package com.cdtn.kltn.service;
 
 import com.cdtn.kltn.common.Enums;
 import com.cdtn.kltn.dto.auth.request.AuthenticationRequest;
+import com.cdtn.kltn.dto.auth.request.ChangePasswordDTO;
 import com.cdtn.kltn.dto.auth.request.RegistrationDTO;
 import com.cdtn.kltn.dto.auth.response.AuthenticationResponse;
 import com.cdtn.kltn.dto.base.response.BaseResponseData;
-import com.cdtn.kltn.dto.client.respone.ClientInfoDTO;
+import com.cdtn.kltn.dto.client.respone.ClientInfoResponse;
 import com.cdtn.kltn.entity.AccountsLever;
 import com.cdtn.kltn.entity.Client;
 import com.cdtn.kltn.entity.Image;
@@ -94,6 +95,17 @@ public class AuthService {
                 .build());
         return new BaseResponseData(200, "Đăng ký thành công", null);
     }
+    @Transactional
+    public void changePassword(ChangePasswordDTO changePasswordDTO){
+        User user = userRepository.findById(changePasswordDTO.getId())
+                .orElseThrow(()-> new StoreException("Không tìn thấy user"));
+        boolean isMatch = passwordEncoder.matches(changePasswordDTO.getOldPassword(), user.getPassword());
+        if(!isMatch){
+            throw new StoreException("Mật khẩu cũ không đúng");
+        }else {
+            user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+        }
+    }
 
     @Transactional
     public BaseResponseData clientInfo(String token) {
@@ -112,7 +124,7 @@ public class AuthService {
                     return new BaseResponseData(500, "Cấp tài khoản không tồn tại", null);
                 }else {
                     return image.map(value -> new BaseResponseData(200, "Dữ liệu client được trả ra thành công",
-                            ClientInfoDTO.builder()
+                            ClientInfoResponse.builder()
                                     .codeClient(client.get().getCodeClient())
                                     .userId(client.get().getUserId())
                                     .fullName(client.get().getFullName())
@@ -131,7 +143,7 @@ public class AuthService {
                                     .accountLeverTypeName(Enums.TypeAccountLever.checkName(accountsLever.get().getAccountTypeLever()))
                                     .statusAccountLever(accountsLever.get().getStatus())
                                     .build())).orElseGet(() -> new BaseResponseData(200, "Dữ liệu client được trả ra thành công",
-                            ClientInfoDTO.builder()
+                            ClientInfoResponse.builder()
                                     .codeClient(client.get().getCodeClient())
                                     .userId(client.get().getUserId())
                                     .fullName(client.get().getFullName())

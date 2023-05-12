@@ -2,7 +2,6 @@ package com.cdtn.kltn.service;
 
 import com.cdtn.kltn.common.Enums;
 import com.cdtn.kltn.dto.accountlevel.request.AccountsLeverSwitchDTO;
-import com.cdtn.kltn.dto.base.response.BaseResponseData;
 import com.cdtn.kltn.entity.AccountsLever;
 import com.cdtn.kltn.entity.Client;
 import com.cdtn.kltn.entity.News;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

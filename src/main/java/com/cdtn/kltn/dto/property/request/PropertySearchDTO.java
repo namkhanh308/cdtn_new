@@ -9,5 +9,5 @@ public class PropertySearchDTO {
     private String codeProperty;
     private String codeTypeProperty;
     private String nameProperty;
-
+    private String codeClient;
 }

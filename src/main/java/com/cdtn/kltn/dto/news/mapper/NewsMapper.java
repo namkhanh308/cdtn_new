@@ -20,7 +20,7 @@ public class NewsMapper {
                     .statusUpTop(Enums.StatusUpTop.HETHAN.getCode())
                     .build();
     }
-
+    /*
     public CreateNewsDTO createNewsDetailRespones(News news){
         return CreateNewsDTO.builder()
                 .codeProperty(news.getCodeProperty())
@@ -30,6 +30,7 @@ public class NewsMapper {
                 .nameNews(news.getNameNews())
                 .build();
     }
+     */
 
     public News pushTopNews(PushTopDTO pushTopDTO, News news){
         news.setTimeUpTopStart(pushTopDTO.getTimeUpTopStart());

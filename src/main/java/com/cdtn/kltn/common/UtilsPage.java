@@ -9,9 +9,9 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public class UltilsPage {
+public class UtilsPage {
 
-        private UltilsPage(){}
+        private UtilsPage(){}
 
         public static PagingResponeDTO paging(PropertySearchDTO request){
             int start = 0;

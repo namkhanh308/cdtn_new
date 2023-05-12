@@ -1,6 +1,6 @@
 package com.cdtn.kltn.service;
 
-import com.cdtn.kltn.common.UltilsPage;
+import com.cdtn.kltn.common.UtilsPage;
 import com.cdtn.kltn.dto.pagination.PagingResponeDTO;
 import com.cdtn.kltn.dto.property.mapper.ImageMapperProperty;
 import com.cdtn.kltn.dto.property.mapper.PropertyMapper;
@@ -89,12 +89,13 @@ public class PropertyService {
 
     public PagingResponeDTO findAllPropertyManager(PropertySearchDTO propertySearchDTO) {
         // Lấy ra offset, page
-        PagingResponeDTO pagingResponeDTO = UltilsPage.paging(propertySearchDTO);
+        PagingResponeDTO pagingResponeDTO = UtilsPage.paging(propertySearchDTO);
         // Lấy ra danh sách theo điều kiện tìm kiếm
         List<PropertyDataSearchRespone> propertyDatumSearchRespones = propertyRepository.findAllPropertyManager
                 (propertySearchDTO.getCodeProperty(),
                         propertySearchDTO.getNameProperty(),
                         propertySearchDTO.getCodeTypeProperty(),
+                        propertySearchDTO.getCodeClient(),
                         pagingResponeDTO.getOffset(),
                         pagingResponeDTO.getRecords());
         //Lấy ra tổng số bản ghi - totalRecord

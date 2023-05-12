@@ -5,9 +5,11 @@ import com.cdtn.kltn.dto.news.request.CreateNewsDTO;
 import com.cdtn.kltn.dto.news.request.ManagerNewsSearchDTO;
 import com.cdtn.kltn.dto.news.request.PushTopDTO;
 import com.cdtn.kltn.dto.news.respone.ManagerNewsSearchRespone;
+import com.cdtn.kltn.entity.News;
 import com.cdtn.kltn.service.NewsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -45,8 +47,8 @@ public class NewsController {
     @GetMapping("/findNewsDetail")
     public ResponseEntity<BaseResponseData> findNewsDetail(@RequestParam Long id) {
         try {
-            CreateNewsDTO createNewsDTO = newsService.findNewsDetail(id);
-            return ResponseEntity.ok(new BaseResponseData(200, "Hiển thị thông tin chi tiết tin", createNewsDTO));
+            News news = newsService.findNewsDetail(id);
+            return ResponseEntity.ok(new BaseResponseData(200, "Hiển thị thông tin chi tiết tin", news));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
         }
@@ -71,7 +73,7 @@ public class NewsController {
                     .body(new BaseResponseData(400, errorMessage, null));
         }
         try {
-            List<ManagerNewsSearchRespone> list =  newsService.findAllNewsManager(managerNewsSearchDTO);
+            Page<ManagerNewsSearchRespone> list =  newsService.findAllNewsManager(managerNewsSearchDTO);
             return ResponseEntity.ok(new BaseResponseData(200, "Hiển thị danh sách tin thành công", list));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
