@@ -2,8 +2,11 @@ package com.cdtn.kltn.controller;
 
 import com.cdtn.kltn.dto.base.response.BaseResponseData;
 import com.cdtn.kltn.dto.news.request.CreateNewsDTO;
+import com.cdtn.kltn.dto.news.request.CustomerNewsSearchDTO;
 import com.cdtn.kltn.dto.news.request.ManagerNewsSearchDTO;
 import com.cdtn.kltn.dto.news.request.PushTopDTO;
+import com.cdtn.kltn.dto.news.respone.CustomerNewsDetailResponse;
+import com.cdtn.kltn.dto.news.respone.CustomerNewsResponse;
 import com.cdtn.kltn.dto.news.respone.ManagerNewsSearchRespone;
 import com.cdtn.kltn.entity.News;
 import com.cdtn.kltn.service.NewsService;
@@ -54,7 +57,7 @@ public class NewsController {
         }
     }
 
-    @GetMapping("/pushTopNews")
+    @PostMapping("/pushTopNews")
     public ResponseEntity<BaseResponseData> pushTopNews(@RequestBody @Valid PushTopDTO pushTopDTO) {
         try {
             newsService.pushTopNews(pushTopDTO);
@@ -73,12 +76,51 @@ public class NewsController {
                     .body(new BaseResponseData(400, errorMessage, null));
         }
         try {
-            Page<ManagerNewsSearchRespone> list =  newsService.findAllNewsManager(managerNewsSearchDTO);
+            Page<ManagerNewsSearchRespone> list = newsService.findAllNewsManager(managerNewsSearchDTO);
             return ResponseEntity.ok(new BaseResponseData(200, "Hiển thị danh sách tin thành công", list));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
         }
     }
 
+    @PostMapping("/customer/findAllNews")
+    public ResponseEntity<BaseResponseData> findAllNewsManager(@RequestBody @Valid CustomerNewsSearchDTO customerNewsSearchDTO
+            , BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            String errorMessage = "Bad Request: " + bindingResult.getAllErrors().get(0).getDefaultMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new BaseResponseData(400, errorMessage, null));
+        }
+        try {
+            Page<?> list = newsService.findAllNewsCustomer(customerNewsSearchDTO);
+            return ResponseEntity.ok(new BaseResponseData(200, "Hiển thị danh sách tin thành công", list));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/customer/findNewsDetail")
+    public ResponseEntity<BaseResponseData> findNewsDetailCustomer(@RequestParam Long id) {
+        try {
+            CustomerNewsDetailResponse newsDetailCustomer = newsService.findNewsDetailCustomer(id);
+            return ResponseEntity.ok(new BaseResponseData(200, "Hiển thị thông tin chi tiết tin", newsDetailCustomer));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/customer/findNewsSame")
+    public ResponseEntity<BaseResponseData> findNewsSame(@RequestParam String codeTypeProperty,
+                                                         @RequestParam String codeCateTypePropertyCategory,
+                                                         @RequestParam String provinceCode,
+                                                         @RequestParam Long idCurrent
+                                                         ) {
+        try {
+            List<CustomerNewsResponse> sameNews = newsService.findNewSame(codeTypeProperty,codeCateTypePropertyCategory,provinceCode,idCurrent);
+            return ResponseEntity.ok(new BaseResponseData(200, "Hiển thị thông tin chi tiết tin", sameNews));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
+        }
+    }
 
 }

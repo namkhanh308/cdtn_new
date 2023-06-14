@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .requestMatchers(
                         "/auth/login",
                         "/auth/registerAccount",
+                        "/news/customer/**",
                         "/province/**",
                         "/districts/**",
                         "/wards/**",

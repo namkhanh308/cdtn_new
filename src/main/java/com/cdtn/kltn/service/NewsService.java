@@ -1,11 +1,16 @@
 package com.cdtn.kltn.service;
 
 import com.cdtn.kltn.common.Enums;
+import com.cdtn.kltn.common.UtilsPage;
 import com.cdtn.kltn.dto.news.mapper.NewsMapper;
 import com.cdtn.kltn.dto.news.request.CreateNewsDTO;
+import com.cdtn.kltn.dto.news.request.CustomerNewsSearchDTO;
 import com.cdtn.kltn.dto.news.request.ManagerNewsSearchDTO;
 import com.cdtn.kltn.dto.news.request.PushTopDTO;
+import com.cdtn.kltn.dto.news.respone.CustomerNewsDetailResponse;
+import com.cdtn.kltn.dto.news.respone.CustomerNewsResponse;
 import com.cdtn.kltn.dto.news.respone.ManagerNewsSearchRespone;
+import com.cdtn.kltn.dto.property.request.CreatePropertyDTO;
 import com.cdtn.kltn.entity.*;
 import com.cdtn.kltn.exception.StoreException;
 import com.cdtn.kltn.repository.accountlever.AccountsLeverRepository;
@@ -14,10 +19,12 @@ import com.cdtn.kltn.repository.news.CustomNewsRepositoryImp;
 import com.cdtn.kltn.repository.news.NewsRepository;
 import com.cdtn.kltn.repository.property.PropertyRepository;
 import com.cdtn.kltn.repository.province.ProvinceRepository;
+import com.cdtn.kltn.repository.user.UserRepository;
 import com.cdtn.kltn.repository.wards.WardsRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +43,8 @@ public class NewsService {
     private final ProvinceRepository provinceRepository;
     private final AccountsLeverRepository accountsLeverRepository;
     private final CustomNewsRepositoryImp customNewsRepositoryImp;
+    private final PropertyService propertyService;
+    private final UserRepository userRepository;
 
     private final NewsMapper newsMapper;
 
@@ -164,6 +173,14 @@ public class NewsService {
                 .orElseThrow(() -> new StoreException("Không tìm thấy tin nào"));
     }
 
+    public CustomerNewsDetailResponse findNewsDetailCustomer(Long id) {
+        News news = newsRepository.findById(id)
+                .orElseThrow(() -> new StoreException("Không tìm thấy tin nào"));
+        CreatePropertyDTO property = propertyService.findPropertyDetail(news.getCodeProperty());
+        User user = userRepository.findUserByCodeClient(property.getCodeClient());
+        return CustomerNewsDetailResponse.builder().news(news).createPropertyDTO(property).user(user).build();
+    }
+
     public Page<ManagerNewsSearchRespone> findAllNewsManager(ManagerNewsSearchDTO managerNewsSearchDTO) {
         return customNewsRepositoryImp.findAllNewsManager(managerNewsSearchDTO);
     }
@@ -194,4 +211,24 @@ public class NewsService {
         return addressName.toString();
     }
 
+    public Page<?> findAllNewsCustomer(CustomerNewsSearchDTO customerNewsSearchDTO) {
+        Pageable pageable = UtilsPage.getPage("DESC", "id", customerNewsSearchDTO.getPage(), customerNewsSearchDTO.getSize());
+        return newsRepository.getPageCustomer(customerNewsSearchDTO.getNameSearch(),
+                customerNewsSearchDTO.getProvinceCode(),
+                customerNewsSearchDTO.getDistrictCode(),
+                customerNewsSearchDTO.getCodeTypeProperty(),
+                customerNewsSearchDTO.getCodeCateTypePropertyCategory(),
+                customerNewsSearchDTO.getPriceStart(),
+                customerNewsSearchDTO.getPriceEnd(),
+                customerNewsSearchDTO.getAreaMinRange(),
+                customerNewsSearchDTO.getAreaMaxRange(),
+                customerNewsSearchDTO.getTotalRoom(),
+                customerNewsSearchDTO.getRangeDaySearch(),
+                pageable
+        );
+    }
+
+    public List<CustomerNewsResponse> findNewSame(String codeTypeProperty, String codeCateTypePropertyCategory, String provinceCode, Long id) {
+        return newsRepository.getNewsSame(codeTypeProperty,codeCateTypePropertyCategory,provinceCode, id);
+    }
 }
