@@ -60,7 +60,7 @@ public interface NewsRepository extends JpaRepository<News, Long> {
                                                                                                           cast(pi.kitchen_count as SIGNED integer) +
                                                                                                           cast(pi.living_count as SIGNED integer)) = ?10 end )
                                                     and (?11 = '' or ?11 is null or (n.date_create >= current_date + INTERVAL - ?11 DAY))
-                                                    and n.status = '1'
+                                                    and n.status_news = 1
                                                     order by n.status_up_top asc, n.date_create desc, n.id desc                                                                                                                           
             """, nativeQuery = true)
     Page<CustomerNewsResponse> getPageCustomer(String nameSearch, String provinceCode, String districtCode, String codeTypeProperty,
