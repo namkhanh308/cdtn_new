@@ -10,8 +10,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -28,14 +30,21 @@ public class ProvinceService {
     }
 
     public Object findAllProvinceAndDistrict() {
-        List<Province> provinceList = provinceRepository.findAll();
+        List<Province> provinceList = new ArrayList<>();
+        provinceList.add(0, Province.builder().provinceCode(null).provinceName("Toàn quốc").build());
+        provinceList.addAll(provinceRepository.findAll());
+
+
         List<Districs> districsList = districsRepository.findAll();
 
-        Map<String, List<Districs> > mapDistrictByProvinceCode =
+        Map<String, List<Districs>> mapDistrictByProvinceCode =
                 StreamUtil.groupingApply(districsList, Districs::getProvinceCode);
 
         for (Province province : provinceList) {
             List<Districs> districtListItem = mapDistrictByProvinceCode.getOrDefault(province.getProvinceCode(), null);
+            if(Objects.nonNull(districtListItem)){
+                districtListItem.add(0, Districs.builder().districtCode(null).districtName("Tất cả").provinceCode(province.getProvinceCode()).build());
+            }
             province.setDistricsList(districtListItem);
         }
         return provinceList;
