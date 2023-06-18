@@ -24,5 +24,9 @@ public class TypePropertyController {
     public ResponseEntity<BaseResponseData> findAllByCodeTypePropertyCategory(@RequestParam Long codeTypePropertyCategory){
         return ResponseEntity.ok(typePropertyService.findAllByCodeTypePropertyCategory(codeTypePropertyCategory));
     }
+    @RequestMapping("/findAllTypePropertyAndCategoryTypeProperty")
+    public ResponseEntity<BaseResponseData> findAllTypePropertyAndCategoryTypeProperty(){
+        return ResponseEntity.ok(new BaseResponseData(200, "Success",typePropertyService.findAllTypePropertyAndCategoryTypeProperty()));
+    }
 
 }
