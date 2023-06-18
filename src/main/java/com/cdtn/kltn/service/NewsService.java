@@ -231,4 +231,17 @@ public class NewsService {
     public List<CustomerNewsResponse> findNewSame(String codeTypeProperty, String codeCateTypePropertyCategory, String provinceCode, Long id) {
         return newsRepository.getNewsSame(codeTypeProperty,codeCateTypePropertyCategory,provinceCode, id);
     }
+
+    public void setNewsExpirationStatus(News news){
+        news.setStatusNews(Enums.StatusNews.HETHAN.getCode());
+        try {
+            Property property = propertyRepository.findByCodeProperty(news.getCodeProperty())
+                    .orElseThrow(() -> new StoreException("Không tìm thấy tài sản"));
+            property.setStatusProperty(Enums.StatusProperty.DACHINHSUA.getCode());
+            propertyRepository.save(property);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
