@@ -3,6 +3,8 @@ package com.cdtn.kltn.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -20,5 +22,8 @@ public class Province {
     private String codeName;
     private String divisionType;
     private String phoneCode;
+
+    @Transient
+    private List<Districs> districsList;
 
 }

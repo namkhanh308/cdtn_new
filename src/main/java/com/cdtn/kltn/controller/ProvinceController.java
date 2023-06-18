@@ -18,5 +18,8 @@ public class ProvinceController {
         return ResponseEntity.ok(provinceService.findAll());
     }
 
-
+    @GetMapping("/findAllProvinceAndDistrict")
+    public ResponseEntity<BaseResponseData> findAllProvinceAndDistrict(){
+        return ResponseEntity.ok(new BaseResponseData(200, "Success",provinceService.findAllProvinceAndDistrict()));
+    }
 }
