@@ -8,6 +8,7 @@ import com.cdtn.kltn.dto.news.request.CustomerNewsSearchDTO;
 import com.cdtn.kltn.dto.news.request.ManagerNewsSearchDTO;
 import com.cdtn.kltn.dto.news.request.PushTopDTO;
 import com.cdtn.kltn.dto.news.respone.CustomerNewsDetailResponse;
+import com.cdtn.kltn.dto.news.respone.CustomerNewsForCodeCate;
 import com.cdtn.kltn.dto.news.respone.CustomerNewsResponse;
 import com.cdtn.kltn.dto.news.respone.ManagerNewsSearchRespone;
 import com.cdtn.kltn.dto.property.request.CreatePropertyDTO;
@@ -91,6 +92,8 @@ public class NewsService {
                 news.setDateCreate(createNewsDTO.getDateCreate());
                 if (news.getDateExpiration().isAfter(accountsLever.getEndDate())) {
                     news.setDateExpiration(accountsLever.getEndDate());
+                }else{
+                    news.setDateExpiration(createNewsDTO.getDateExpiration());
                 }
                 news.setStatusNews(Enums.StatusNews.DANGHOATDONG.getCode());
                 newsRepository.save(news);
@@ -232,16 +235,18 @@ public class NewsService {
         return newsRepository.getNewsSame(codeTypeProperty,codeCateTypePropertyCategory,provinceCode, id);
     }
 
-    public void setNewsExpirationStatus(News news){
-        news.setStatusNews(Enums.StatusNews.HETHAN.getCode());
-        try {
-            Property property = propertyRepository.findByCodeProperty(news.getCodeProperty())
-                    .orElseThrow(() -> new StoreException("Không tìm thấy tài sản"));
-            property.setStatusProperty(Enums.StatusProperty.DACHINHSUA.getCode());
-            propertyRepository.save(property);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public List<CustomerNewsForCodeCate> findNewByCodeCate() {
+        return newsRepository.findNewsOrderCodeCategory();
     }
 
+    public void plusViewForNews(Long id) {
+        News news = newsRepository.findById(id).orElseThrow(() -> new StoreException("Không tìm thấy tin"));
+        Long viewCurrent = (news.getView() == null) ? 0 : news.getView();
+        news.setView(viewCurrent + 1);
+        newsRepository.save(news);
+    }
+
+    public List<?> outstandingProject() {
+        return newsRepository.outstandingProject();
+    }
 }

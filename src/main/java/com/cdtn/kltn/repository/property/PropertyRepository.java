@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface PropertyRepository extends JpaRepository<Property, Long> {
-    @Query(value = "select id from property order by id desc limit 1",nativeQuery = true)
+    @Query(value = "select id from property order by id desc limit 1", nativeQuery = true)
     Long getIndex();
 
     Optional<Property> findByCodeProperty(String codeProperty);
@@ -33,7 +33,12 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
             "                                        ) AS url,\n" +
             "                                        case when p.date_change is null then p.date_create\n" +
             "                                             else p.date_change\n" +
-            "                                            end as lastDateUpdate\n" +
+            "                                            end as lastDateUpdate,\n" +
+            "                                       case when p.status_property = 1 then 'Tạo mới' " +
+            "                                       when p.status_property = 2 then 'Đã chỉnh sửa' " +
+            "                                           when p.status_property = 3 then 'Đang cho thuê' " +
+            "                                           when p.status_property = 4 then 'Đã hủy' " +
+            "                                       end as status " +
             "                                    FROM property p\n" +
             "                                             INNER JOIN propertyinfo pi ON p.code_property = pi.code_property\n" +
             "                                             JOIN districs d ON p.district_code = d.district_code\n" +
@@ -54,6 +59,7 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
             "        '' as nameTypeProperty,\n" +
             "        '' as url,\n" +
             "        '' as lastDateUpdate,\n" +
+            "        '' as status,\n" +
             "        count(*) as totalRecord\n" +
             " FROM property p\n" +
             "          INNER JOIN propertyinfo pi ON p.code_property = pi.code_property\n" +
@@ -94,11 +100,11 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
             "       pi.introduces as introduces,\n" +
             "       pi.location as location\n" +
             "    from property p inner join propertyinfo pi on p.code_property = pi.code_property\n" +
-            "    where p.code_property = :codeProperty",nativeQuery = true)
+            "    where p.code_property = :codeProperty", nativeQuery = true)
     Optional<PropertyDetailDataRespone> findPropertyByCodeProperty(@Param("codeProperty") String codeProperty);
 
     @Query(value = "delete from propertyinfo where code_property = :codeProperty ;\n" +
             "delete from image where property_code = :codeProperty ; \n" +
-            "delete from property where code_property = :codeProperty ;",nativeQuery = true)
+            "delete from property where code_property = :codeProperty ;", nativeQuery = true)
     void deleteProperty(@Param("codeProperty") String codeProperty);
 }

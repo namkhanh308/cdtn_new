@@ -26,5 +26,6 @@ public class News {
     private LocalDateTime timeUpTopStart;
     private LocalDateTime timeUpTopEnd;
     private Long statusUpTop;
+    private Long view;
 
 }

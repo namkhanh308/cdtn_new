@@ -96,9 +96,7 @@ public class Enums {
         MOITAO(1, "Tạo mới"),
         DACHINHSUA(2, "Đã chỉnh sửa"),
         DANGCHOTHUE(3,"Đang cho thuê"),
-        DACHOTHUE(4,"Đã cho thuê"),
-        DABIKHOA(5,"Đã bị khóa"),
-        HUY(6,"Đã hủy");
+        DAHUY(4,"Đã hủy");
         private final Integer code;
         private final String name;
         StatusProperty(Integer code, String name) {
@@ -215,8 +213,7 @@ public class Enums {
     public enum StatusNews{
         DANGHOATDONG(1,"Đang hoạt động"),
         HETHAN(2,"Đã hết hạn"),
-        DAHOANTHANH(3,"Đã hoàn thành"),
-        DAXOA(4,"Đã xóa");
+        DAXOA(3,"Đã xóa");
 
         private final Integer code;
         private final String name;

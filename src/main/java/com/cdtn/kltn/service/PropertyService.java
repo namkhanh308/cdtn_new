@@ -1,5 +1,6 @@
 package com.cdtn.kltn.service;
 
+import com.cdtn.kltn.common.Enums;
 import com.cdtn.kltn.common.UtilsPage;
 import com.cdtn.kltn.dto.pagination.PagingResponeDTO;
 import com.cdtn.kltn.dto.property.mapper.ImageMapperProperty;
@@ -11,10 +12,12 @@ import com.cdtn.kltn.dto.property.respone.PropertyDataSearchRespone;
 import com.cdtn.kltn.dto.property.respone.PropertyDetailDataRespone;
 import com.cdtn.kltn.dto.propertyinfo.mapper.PropertyInfoMapper;
 import com.cdtn.kltn.entity.Image;
+import com.cdtn.kltn.entity.News;
 import com.cdtn.kltn.entity.Property;
 import com.cdtn.kltn.entity.PropertyInfo;
 import com.cdtn.kltn.exception.StoreException;
 import com.cdtn.kltn.repository.image.ImageRepository;
+import com.cdtn.kltn.repository.news.NewsRepository;
 import com.cdtn.kltn.repository.property.PropertyRepository;
 import com.cdtn.kltn.repository.propertyinfo.PropertyInfoRepository;
 import io.micrometer.common.util.StringUtils;
@@ -36,6 +39,7 @@ public class PropertyService {
     private final PropertyMapper propertyMapper;
     private final PropertyInfoMapper propertyInfoMapper;
     private final ImageMapperProperty imageMapperProperty;
+    private final NewsRepository newsRepository;
 
     @Transactional
     public void createProperty(CreatePropertyDTO createPropertyDTO) {
@@ -106,6 +110,7 @@ public class PropertyService {
                 .getTotalRecord());
         //xóa bỏ hàng chứa totalRecord
         propertyDatumSearchRespones.removeIf(property -> StringUtils.isEmpty(property.getCodeProperty()));
+        System.out.println(propertyDatumSearchRespones);
         pagingResponeDTO.setData(propertyDatumSearchRespones);
         if (propertyDatumSearchRespones.isEmpty()) {
             throw new StoreException("Danh sách tài sản hiển thị tất bại");
@@ -141,12 +146,17 @@ public class PropertyService {
     public void deleteProperty(String codeProperty) {
         Property property = propertyRepository.findByCodeProperty(codeProperty)
                 .orElseThrow(() -> new StoreException("Tài sản không tồn tại"));
-        PropertyInfo propertyInfo = propertyInfoRepository.findByCodeProperty(codeProperty)
-                .orElseThrow(() -> new StoreException("Tài sản chi tiết không tồn tại"));
-        List<Image> imageList = imageService.findAllByPropertyCode(codeProperty);
-        propertyRepository.delete(property);
-        propertyInfoRepository.delete(propertyInfo);
-        imageRepository.deleteAll(imageList);
+        if (Objects.equals(property.getStatusProperty(), Enums.StatusProperty.DANGCHOTHUE.getCode())) {
+            throw new StoreException("Tài sản đang được cho thuê. Không thể xóa");
+        } else {
+            List<News> listNews = newsRepository.findAllByCodeProperty(codeProperty);
+            listNews.forEach(news -> {
+                news.setStatusNews(Enums.StatusNews.DAXOA.getCode());
+            });
+            property.setStatusProperty(Enums.StatusNews.DAXOA.getCode());
+            propertyRepository.save(property);
+            newsRepository.saveAll(listNews);
+        }
     }
 }
 

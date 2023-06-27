@@ -123,4 +123,35 @@ public class NewsController {
         }
     }
 
+    @GetMapping("/customer/findNewByCodeCate")
+    public ResponseEntity<BaseResponseData> findNewByCodeCate() {
+        try {
+            List<?> news = newsService.findNewByCodeCate();
+            return ResponseEntity.ok(new BaseResponseData(200, "Hiển thị danh sách tin theo codeCate", news));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/customer/plusViewForNews")
+    public ResponseEntity<BaseResponseData> plusViewForNews(@RequestParam Long id) {
+        try {
+            newsService.plusViewForNews(id);
+            return ResponseEntity.ok(new BaseResponseData(200, "Success", null));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/customer/outstandingProject")
+    public ResponseEntity<BaseResponseData> outstandingProject() {
+        try {
+            List<?> news = newsService.outstandingProject();
+            return ResponseEntity.ok(new BaseResponseData(200, "Danh sách dự án nổi bật hiển thị thành công", news));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
+        }
+    }
+
+
 }

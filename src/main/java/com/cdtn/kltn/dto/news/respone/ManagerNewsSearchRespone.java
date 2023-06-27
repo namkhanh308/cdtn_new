@@ -19,4 +19,7 @@ public class ManagerNewsSearchRespone {
     private String statusNews;
     private String url;
     private String address;
+    private LocalDateTime timeUpTopStart;
+    private LocalDateTime timeUpTopEnd;
+    private Long statusUpTop;
 }
