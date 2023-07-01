@@ -187,7 +187,9 @@ public interface NewsRepository extends JpaRepository<News, Long> {
             where p.province_code = ?1
               and MONTH(n.date_create) = ?2
               and YEAR(n.date_create) = ?3
-              and p.code_cate_type_property_category = ?4)
+              and p.code_cate_type_property_category = ?4
+              group by p.district_code
+              )
                as ne on di.district_code = ne.district_code
     """, nativeQuery = true)
     List<StatisticsByDistrict> statisticsByDistrict(String provinceCode, Long month, Long year, String codeCategory);
