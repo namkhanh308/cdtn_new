@@ -108,6 +108,22 @@ public interface NewsRepository extends JpaRepository<News, Long> {
             """, nativeQuery = true)
     List<CustomerNewsForCodeCate> findNewsOrderCodeCategory();
 
-    @Query("SELECT n FROM News n WHERE n.statusNews = 1 ORDER BY n.view DESC")
+    @Query(""" 
+            SELECT new News(n.nameNews, 
+                            n.codeProperty,
+                             n.address, 
+                             n.dateCreate,
+                             n.dateExpiration,
+                             n.statusNews,
+                             n.timeUpTopStart,
+                             n.timeUpTopEnd,
+                             n.statusUpTop,
+                             n.view,
+                             i.url,
+                             pi.priceLoan) 
+                              FROM News n join PropertyInfo pi on n.codeProperty = pi.codeProperty  
+                              join Image i on i.propertyCode = n.codeProperty
+                              WHERE n.statusNews = 1 ORDER BY n.view DESC                           
+            """)
     List<News> outstandingProject();
 }
