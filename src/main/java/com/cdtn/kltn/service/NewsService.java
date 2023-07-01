@@ -15,6 +15,7 @@ import com.cdtn.kltn.dto.property.request.CreatePropertyDTO;
 import com.cdtn.kltn.entity.*;
 import com.cdtn.kltn.exception.StoreException;
 import com.cdtn.kltn.repository.accountlever.AccountsLeverRepository;
+import com.cdtn.kltn.repository.client.ClientRepository;
 import com.cdtn.kltn.repository.districs.DistricsRepository;
 import com.cdtn.kltn.repository.news.CustomNewsRepositoryImp;
 import com.cdtn.kltn.repository.news.NewsRepository;
@@ -46,6 +47,7 @@ public class NewsService {
     private final CustomNewsRepositoryImp customNewsRepositoryImp;
     private final PropertyService propertyService;
     private final UserRepository userRepository;
+    private final ClientRepository clientRepository;
 
     private final NewsMapper newsMapper;
 
@@ -181,7 +183,9 @@ public class NewsService {
                 .orElseThrow(() -> new StoreException("Không tìm thấy tin nào"));
         CreatePropertyDTO property = propertyService.findPropertyDetail(news.getCodeProperty());
         User user = userRepository.findUserByCodeClient(property.getCodeClient());
-        return CustomerNewsDetailResponse.builder().news(news).createPropertyDTO(property).user(user).build();
+        Client client = clientRepository.findByCodeClient(property.getCodeClient())
+                .orElseThrow(() -> new StoreException("Không tìm thấy client nào"));
+        return CustomerNewsDetailResponse.builder().news(news).createPropertyDTO(property).user(user).client(client).build();
     }
 
     public Page<ManagerNewsSearchRespone> findAllNewsManager(ManagerNewsSearchDTO managerNewsSearchDTO) {
@@ -229,6 +233,7 @@ public class NewsService {
                 customerNewsSearchDTO.getRangeDaySearch(),
                 pageable
         );
+
     }
 
     public List<CustomerNewsResponse> findNewSame(String codeTypeProperty, String codeCateTypePropertyCategory, String provinceCode, Long id) {
@@ -248,5 +253,13 @@ public class NewsService {
 
     public List<?> outstandingProject() {
         return newsRepository.outstandingProject();
+    }
+
+    public List<?> statisticsByPrice(String provinceCode, Long month, Long year, String codeCategoryTypeProperty ) {
+        return newsRepository.statisticsByPrice(provinceCode,month,year,codeCategoryTypeProperty);
+    }
+
+    public List<?> statisticsByDistrict(String provinceCode, Long month, Long year, String codeCategoryTypeProperty ) {
+        return newsRepository.statisticsByDistrict(provinceCode,month,year,codeCategoryTypeProperty);
     }
 }

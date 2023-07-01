@@ -114,9 +114,9 @@ public class NewsController {
                                                          @RequestParam String codeCateTypePropertyCategory,
                                                          @RequestParam String provinceCode,
                                                          @RequestParam Long idCurrent
-                                                         ) {
+    ) {
         try {
-            List<CustomerNewsResponse> sameNews = newsService.findNewSame(codeTypeProperty,codeCateTypePropertyCategory,provinceCode,idCurrent);
+            List<CustomerNewsResponse> sameNews = newsService.findNewSame(codeTypeProperty, codeCateTypePropertyCategory, provinceCode, idCurrent);
             return ResponseEntity.ok(new BaseResponseData(200, "Hiển thị thông tin chi tiết tin", sameNews));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
@@ -148,6 +148,32 @@ public class NewsController {
         try {
             List<?> news = newsService.outstandingProject();
             return ResponseEntity.ok(new BaseResponseData(200, "Danh sách dự án nổi bật hiển thị thành công", news));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/statisticsByPrice")
+    public ResponseEntity<BaseResponseData> statisticsByPrice(@RequestParam String provinceCode,
+                                                              @RequestParam Long month,
+                                                              @RequestParam Long year,
+                                                              @RequestParam String codeCategoryTypeProperty) {
+        try {
+            List<?> news = newsService.statisticsByPrice(provinceCode,month,year,codeCategoryTypeProperty);
+            return ResponseEntity.ok(new BaseResponseData(200, "Thống kê theo giá hiển thị thành công", news));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/statisticsByDistrict")
+    public ResponseEntity<BaseResponseData> StatisticsByDistrict(@RequestParam String provinceCode,
+                                                              @RequestParam Long month,
+                                                              @RequestParam Long year,
+                                                              @RequestParam String codeCategoryTypeProperty) {
+        try {
+            List<?> news = newsService.statisticsByDistrict(provinceCode,month,year,codeCategoryTypeProperty);
+            return ResponseEntity.ok(new BaseResponseData(200, "Thống kê theo quận/ huyện hiển thị thành công", news));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
         }

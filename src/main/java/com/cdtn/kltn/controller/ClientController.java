@@ -61,4 +61,13 @@ public class ClientController {
         }
     }
 
+    @GetMapping("/savePhone")
+    public ResponseEntity<BaseResponseData> savePhone(@RequestParam String codeClient, @RequestParam String phone) {
+        try{
+            clientService.savePhone(codeClient,phone);
+            return ResponseEntity.ok(new BaseResponseData(200, "Đăng ký số điện thoại thành công", null));
+        }catch (Exception e){
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
+        }
+    }
 }

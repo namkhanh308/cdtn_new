@@ -2,6 +2,8 @@ package com.cdtn.kltn.repository.news;
 
 import com.cdtn.kltn.dto.news.respone.CustomerNewsForCodeCate;
 import com.cdtn.kltn.dto.news.respone.CustomerNewsResponse;
+import com.cdtn.kltn.dto.news.respone.StatisticsByDistrict;
+import com.cdtn.kltn.dto.news.respone.StatisticsByPrice;
 import com.cdtn.kltn.entity.News;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,13 +39,15 @@ public interface NewsRepository extends JpaRepository<News, Long> {
                                                   n.date_create as dateCreate,
                                                   n.date_expiration dateExpiration,
                                                   (case when n.status_up_top = 1 then 'YES' else 'NO' end) as isPushTop,
-                                                  (select url from image where property_code = p.code_property limit 1) as url,
-                                                  (select count(1) from image where property_code = p.code_property limit 1) as totalUrl
+                                                  im.url as url,
+                                                  imc.count as totalUrl
                                        from news n
                                                 join property p on n.code_property = p.code_property
                                                 join province p2 on p.province_code = p2.province_code
                                                 join districs d on p.district_code = d.district_code
                                                 join propertyinfo pi on p.code_property = pi.code_property
+                                                join imagelimit1 im on im.property_code = p.code_property
+                                                join imageCountForPropertyCode imc on imc.property_code = p.code_property
                                                 where (?1 = '' or ?1 is null or (n.name_news like concat('%', ?1, '%')
                                                                         or n.address like concat('%', ?1, '%')
                                                                         or p2.province_name like concat('%', ?1, '%')
@@ -109,21 +113,82 @@ public interface NewsRepository extends JpaRepository<News, Long> {
     List<CustomerNewsForCodeCate> findNewsOrderCodeCategory();
 
     @Query(""" 
-            SELECT new News(n.nameNews, 
+            SELECT new News(n.nameNews,
                             n.codeProperty,
-                             n.address, 
-                             n.dateCreate,
-                             n.dateExpiration,
-                             n.statusNews,
-                             n.timeUpTopStart,
-                             n.timeUpTopEnd,
-                             n.statusUpTop,
-                             n.view,
-                             i.url,
-                             pi.priceLoan) 
-                              FROM News n join PropertyInfo pi on n.codeProperty = pi.codeProperty  
-                              join Image i on i.propertyCode = n.codeProperty
-                              WHERE n.statusNews = 1 ORDER BY n.view DESC                           
+                            n.address,
+                            n.dateCreate,
+                            n.dateExpiration,
+                            n.statusNews,
+                            n.timeUpTopStart,
+                            n.timeUpTopEnd,
+                            n.statusUpTop,
+                            n.view,
+                            i.url,
+                            pi.priceLoan)
+            FROM News n
+            JOIN PropertyInfo pi ON n.codeProperty = pi.codeProperty
+            LEFT JOIN Image i ON i.propertyCode = n.codeProperty
+            WHERE n.statusNews = 1
+            GROUP BY n.codeProperty
+            ORDER BY n.view DESC                         
             """)
     List<News> outstandingProject();
+
+
+    @Query(value = """
+        select t.rangeName, IFNULL(sub.count,'0') as rangeCount
+            from (
+                     SELECT '0 - 1000000(triệu)' as rangeName, 1 AS rangeCode
+                     UNION ALL
+                     SELECT '1000000 - 5000000(triệu)' as rangeName, 2
+                     UNION ALL
+                     SELECT '5000000 - 10000000(triệu)' as rangeName, 3
+                     UNION ALL
+                     SELECT '10000000 - 20000000(triệu)' as rangeName, 4
+                     UNION ALL
+                     SELECT '20000000 - 100000000(triệu)' as rangeName, 5
+                     UNION ALL
+                     SELECT '> 1000000000(triệu)' as rangeName, 6
+                 ) AS t
+        left join (
+        select  c.rangeCode, count(c.rangeCode) as count
+        from (
+        select
+               (case
+                    when cast(price_loan as SIGNED INTEGER) > 0 and
+                         cast(price_loan as SIGNED INTEGER) < 1000000 then 1
+                    when cast(price_loan as SIGNED INTEGER) >= 1000000 and
+                         cast(price_loan as SIGNED INTEGER) < 5000000 then 2
+                    when cast(price_loan as SIGNED INTEGER) >= 5000000 and
+                         cast(price_loan as SIGNED INTEGER) < 10000000 then 3
+                    when cast(price_loan as SIGNED INTEGER) >= 10000000 and
+                         cast(price_loan as SIGNED INTEGER) < 20000000 then 4
+                    when cast(price_loan as SIGNED INTEGER) >= 20000000 and
+                         cast(price_loan as SIGNED INTEGER) < 100000000 then 5
+                    when cast(price_loan as SIGNED INTEGER) >= 1000000000 then 6 end) as rangeCode
+        from propertyinfo pi
+                 join property p on pi.code_property = p.code_property
+                 join news n on p.code_property = n.code_property
+        where p.province_code = ?1 and MONTH(n.date_create) = ?2 and YEAR(n.date_create) = ?3
+            and p.code_cate_type_property_category = ?4
+            ) as c
+        group by c.rangeCode) as sub on t.rangeCode = sub.rangeCode;
+    """, nativeQuery = true)
+    List<StatisticsByPrice> statisticsByPrice(String provinceCode, Long month, Long year, String codeCategory );
+
+
+    @Query(value = """
+        select di.district_name as districtName, IFNULL(ne.count,0) as count from
+        (select district_code, district_name
+         from districs where province_code = ?1) as di left join (
+            select p.district_code, count(n.id) as count
+            from news n
+                     join property p on n.code_property = p.code_property
+            where p.province_code = ?1
+              and MONTH(n.date_create) = ?2
+              and YEAR(n.date_create) = ?3
+              and p.code_cate_type_property_category = ?4)
+               as ne on di.district_code = ne.district_code
+    """, nativeQuery = true)
+    List<StatisticsByDistrict> statisticsByDistrict(String provinceCode, Long month, Long year, String codeCategory);
 }

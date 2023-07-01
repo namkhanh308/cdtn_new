@@ -75,4 +75,11 @@ public class ClientService {
         return client;
     }
 
+    public void savePhone(String codeClient, String phone) {
+        Client client = clientRepository.findByCodeClient(codeClient)
+                .orElseThrow(() -> new StoreException("Client không tồn tại"));
+        client.setPhone(phone);
+        clientRepository.save(client);
+    }
+
 }

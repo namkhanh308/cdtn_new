@@ -22,7 +22,7 @@ public class AccountsLeverController {
             accountsLeverService.switchAccountLever(accountsLeverSwitchDTO);
             return ResponseEntity.ok(new BaseResponseData(200, "Chuyển đổi gói tài khoản thành công",null));
         }catch (Exception e){
-            return ResponseEntity.ok(new BaseResponseData(500, "Error", e.getMessage()));
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(),null));
         }
     }
 }
