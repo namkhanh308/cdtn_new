@@ -27,5 +27,6 @@ public class ClientInfoResponse {
     private Integer accountTypeLever;
     private String accountLeverTypeName;
     private Integer statusAccountLever;
+    private String role;
 
 }
