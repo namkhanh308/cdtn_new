@@ -107,7 +107,9 @@ public interface NewsRepository extends JpaRepository<News, Long> {
                 SELECT 'Mặt bằng' as name_code_cate, 5
                 ) AS t left join (select count(1) as tong, p.code_cate_type_property_category
                 from news n join property p on n.code_property = p.code_property
-                where n.status_news = 1) sub on sub.code_cate_type_property_category = t.code_cate
+                where n.status_news = 1
+                group by p.code_cate_type_property_category
+                ) sub on sub.code_cate_type_property_category = t.code_cate
             group by t.code_cate
             """, nativeQuery = true)
     List<CustomerNewsForCodeCate> findNewsOrderCodeCategory();

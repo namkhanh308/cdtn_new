@@ -10,8 +10,7 @@ public class Enums {
 
     public enum Status {
         ACTIVE(1, "ĐANG SỬ DỤNG"),
-        UNACTIVE(2,"CHƯA KÍCH HOẠT"),
-        BLOCK(3, "KHÓA");
+        BLOCK(2, "KHÓA");
         private final Integer code;
         private final String name;
 
