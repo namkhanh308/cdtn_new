@@ -51,6 +51,7 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
             "                                      AND ((:codeTypePropertySearch = '') OR\n" +
             "                                           (p.code_type_property = :codeTypePropertySearch))\n" +
             "                                      and ((:codeClient = '') or :codeClient = p.code_client)\n" +
+            "                                      and (p.status_property <> 4)\n" +
             "                                    LIMIT :offset, :page) t\n" +
             "UNION\n" +
             "(select '' as codeProperty,\n" +
@@ -72,6 +73,7 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
             "               AND ((:namePropertySearch = '') OR (p.name_property = TRIM(:namePropertySearch)))\n" +
             "               AND ((:codeTypePropertySearch = '') OR\n" +
             "                    (p.code_type_property = :codeTypePropertySearch))\n" +
+            "                                      and (p.status_property <> 4)\n" +
             "               and ((:codeClient = '') or :codeClient = p.code_client))", nativeQuery = true)
     List<PropertyDataSearchRespone> findAllPropertyManager(@Param("codePropertySearch") String codePropertySearch,
                                                            @Param("namePropertySearch") String namePropertySearch,
