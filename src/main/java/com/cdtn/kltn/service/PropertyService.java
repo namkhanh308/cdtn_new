@@ -153,7 +153,7 @@ public class PropertyService {
             listNews.forEach(news -> {
                 news.setStatusNews(Enums.StatusNews.DAXOA.getCode());
             });
-            property.setStatusProperty(Enums.StatusNews.DAXOA.getCode());
+            property.setStatusProperty(Enums.StatusProperty.DAHUY.getCode());
             propertyRepository.save(property);
             newsRepository.saveAll(listNews);
         }
