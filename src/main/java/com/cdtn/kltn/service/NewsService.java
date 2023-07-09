@@ -167,8 +167,20 @@ public class NewsService {
         if (!news.getStatusNews().equals(Enums.StatusNews.DANGHOATDONG.getCode())) {
             throw new StoreException("Trạng thái tin không phù hợp để đẩy duyệt");
         } else {
-            news = newsMapper.pushTopNews(pushTopDTO, news);
-            newsRepository.save(news);
+            Property property = propertyRepository.findByCodeProperty(news.getCodeProperty()).orElseThrow(() -> new StoreException("Không tìm thấy tài sản phù hợp"));
+            Client client = clientRepository
+                    .findByCodeClient(property.getCodeClient()).orElseThrow(() -> new StoreException("Không tìm thấy cấp tài khoản"));
+            if(Long.valueOf(client.getMoney()) - 50000 >= 0){
+                news = newsMapper.pushTopNews(pushTopDTO, news);
+                newsRepository.save(news);
+
+                client.setMoney(String.valueOf(Long.valueOf(client.getMoney()) - 50000));
+                clientRepository.save(client);
+                
+            }else {
+                throw new StoreException("Tài khoản của quý khách không đủ 50.000 đồng để đẩy top. Xin vui lòng nạp thêm");
+            }
+
         }
     }
 
