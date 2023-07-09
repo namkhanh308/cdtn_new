@@ -8,6 +8,7 @@ import com.cdtn.kltn.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +44,36 @@ public class AuthController {
         String authorizationHeader = request.getHeader("Authorization");
         String token = authorizationHeader.replace("Bearer ", "").trim();
         return ResponseEntity.ok(authService.clientInfo(token));
+    }
+
+    @GetMapping("/findAllUser")
+    public ResponseEntity<BaseResponseData> findAllUser(@RequestParam String searchName, @RequestParam int page, @RequestParam int size){
+        try {
+            Page<?> list = authService.findAllUser(searchName, page, size);
+            return ResponseEntity.ok(new BaseResponseData(200, "Hiển thị danh sách tài khoản thành công", list));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/resetPassword")
+    public ResponseEntity<BaseResponseData> resetPassword(Long id){
+        try {
+            authService.resetPassword(id);
+            return ResponseEntity.ok(new BaseResponseData(200, "Reset mật khẩu thành công", null));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/changeStatus")
+    public ResponseEntity<BaseResponseData> changeStatus(Long id){
+        try {
+            authService.changeStatus(id);
+            return ResponseEntity.ok(new BaseResponseData(200, "Reset mật khẩu thành công", null));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
+        }
     }
 
 

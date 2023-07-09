@@ -1,6 +1,7 @@
 package com.cdtn.kltn.service;
 
 import com.cdtn.kltn.common.Enums;
+import com.cdtn.kltn.common.UtilsPage;
 import com.cdtn.kltn.dto.auth.request.AuthenticationRequest;
 import com.cdtn.kltn.dto.auth.request.ChangePasswordDTO;
 import com.cdtn.kltn.dto.auth.request.RegistrationDTO;
@@ -18,6 +19,8 @@ import com.cdtn.kltn.repository.image.ImageRepository;
 import com.cdtn.kltn.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -72,6 +75,7 @@ public class AuthService {
                 .firstName(registrationDTO.getFirstName())
                 .lastName(registrationDTO.getLastName())
                 .role("ROLE_CLIENT")
+                .rawPassword(registrationDTO.getPassword())
                 .statusAccount(Enums.Status.ACTIVE.getCode())
                 .build();
         User user =  userRepository.save(userEntity);
@@ -95,7 +99,7 @@ public class AuthService {
                 .build());
         return new BaseResponseData(200, "Đăng ký thành công", null);
     }
-    @Transactional
+
     public void changePassword(ChangePasswordDTO changePasswordDTO){
         User user = userRepository.findById(changePasswordDTO.getId())
                 .orElseThrow(()-> new StoreException("Không tìn thấy user"));
@@ -103,8 +107,10 @@ public class AuthService {
         if(!isMatch){
             throw new StoreException("Mật khẩu cũ không đúng");
         }else {
+            user.setRawPassword(changePasswordDTO.getNewPassword());
             user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
         }
+        userRepository.save(user);
     }
 
     @Transactional
@@ -169,4 +175,31 @@ public class AuthService {
     }
 
 
+    public Page<?> findAllUser(String searchName, int page, int size) {
+        Pageable pageable = UtilsPage.getPage("DESC", "id", page, size);
+        return userRepository.findAllUser(pageable, searchName);
+    }
+
+    public void resetPassword(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(()-> new StoreException("Không tìn thấy user"));
+
+        user.setRawPassword("12345");
+        user.setPassword(passwordEncoder.encode("12345"));
+
+        userRepository.save(user);
+    }
+
+    public void changeStatus(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(()-> new StoreException("Không tìn thấy user"));
+
+        if(user.getStatusAccount().equals(Enums.Status.ACTIVE.getCode())){
+            user.setStatusAccount(Enums.Status.BLOCK.getCode());
+        }else {
+            user.setStatusAccount(Enums.Status.ACTIVE.getCode());
+        }
+
+        userRepository.save(user);
+    }
 }

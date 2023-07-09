@@ -18,6 +18,16 @@ public class Enums {
             this.code = code;
             this.name = name;
         }
+        public static String checkName(Integer code){
+            if (Objects.nonNull(code)) {
+                return Stream.of(Status.values())
+                        .filter(status -> status.getCode().equals(code))
+                        .map(Status::getName)
+                        .findFirst()
+                        .orElseThrow(() -> new StoreException("Status not found with code " + code));
+            }
+            throw new StoreException("TypeAccount status is null");
+        }
 
         public Integer getCode() {
             return code;

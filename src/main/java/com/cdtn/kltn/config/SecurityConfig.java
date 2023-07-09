@@ -26,10 +26,11 @@ public class SecurityConfig {
         http.authorizeHttpRequests()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(
-                        "/auth/login",
+                        "/auth/**",
                         "/auth/registerAccount",
                         "/news/customer/**",
                         "/province/**",
+                        "/agency/**",
                         "/districts/**",
                         "/wards/**",
                         "/common/**",
