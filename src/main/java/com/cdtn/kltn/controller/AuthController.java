@@ -57,7 +57,7 @@ public class AuthController {
     }
 
     @GetMapping("/resetPassword")
-    public ResponseEntity<BaseResponseData> resetPassword(Long id){
+    public ResponseEntity<BaseResponseData> resetPassword(@RequestParam Long id){
         try {
             authService.resetPassword(id);
             return ResponseEntity.ok(new BaseResponseData(200, "Reset mật khẩu thành công", null));
@@ -67,7 +67,7 @@ public class AuthController {
     }
 
     @GetMapping("/changeStatus")
-    public ResponseEntity<BaseResponseData> changeStatus(Long id){
+    public ResponseEntity<BaseResponseData> changeStatus(@RequestParam Long id){
         try {
             authService.changeStatus(id);
             return ResponseEntity.ok(new BaseResponseData(200, "Reset mật khẩu thành công", null));
