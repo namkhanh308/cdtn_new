@@ -31,6 +31,7 @@ public class SecurityConfig {
                         "/news/customer/**",
                         "/province/**",
                         "/agency/**",
+                        "/banner/**",
                         "/districts/**",
                         "/wards/**",
                         "/common/**",

@@ -176,7 +176,7 @@ public class NewsService {
 
                 client.setMoney(String.valueOf(Long.valueOf(client.getMoney()) - 50000));
                 clientRepository.save(client);
-                
+
             }else {
                 throw new StoreException("Tài khoản của quý khách không đủ 50.000 đồng để đẩy top. Xin vui lòng nạp thêm");
             }
