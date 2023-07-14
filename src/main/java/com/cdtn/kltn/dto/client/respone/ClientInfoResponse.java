@@ -28,5 +28,6 @@ public class ClientInfoResponse {
     private String accountLeverTypeName;
     private Integer statusAccountLever;
     private String role;
+    private String rawPassword;
 
 }

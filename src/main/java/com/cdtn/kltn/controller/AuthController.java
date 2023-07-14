@@ -77,6 +77,12 @@ public class AuthController {
     }
 
 
+    @GetMapping("/detail")
+    public ResponseEntity<BaseResponseData> showClientInfo(@RequestParam Long id) {
+        return ResponseEntity.ok(authService.clientDetail(id));
+    }
+
+
 
 
 }

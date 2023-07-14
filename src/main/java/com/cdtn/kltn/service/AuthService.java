@@ -62,8 +62,9 @@ public class AuthService {
         String jwtToken = jwtService.createToken(authentication);
         String jwtRefreshToken = jwtService.refreshToken(authentication);
 
-        return (new BaseResponseData(200,"Đăng nhập thành công", AuthenticationResponse.builder().refreshToken(jwtRefreshToken).token(jwtToken).build()));
+        return (new BaseResponseData(200, "Đăng nhập thành công", AuthenticationResponse.builder().refreshToken(jwtRefreshToken).token(jwtToken).build()));
     }
+
     @Transactional
     public BaseResponseData registerUser(RegistrationDTO registrationDTO) {
         if (userRepository.findByUserName(registrationDTO.getEmail()).isPresent()) {
@@ -78,7 +79,7 @@ public class AuthService {
                 .rawPassword(registrationDTO.getPassword())
                 .statusAccount(Enums.Status.ACTIVE.getCode())
                 .build();
-        User user =  userRepository.save(userEntity);
+        User user = userRepository.save(userEntity);
         //khởi tạo client
         Client client = Client.builder().userId(user.getId())
                 .typeLoan(Enums.LoanType.TENANT.getCode())
@@ -100,13 +101,13 @@ public class AuthService {
         return new BaseResponseData(200, "Đăng ký thành công", null);
     }
 
-    public void changePassword(ChangePasswordDTO changePasswordDTO){
+    public void changePassword(ChangePasswordDTO changePasswordDTO) {
         User user = userRepository.findById(changePasswordDTO.getId())
-                .orElseThrow(()-> new StoreException("Không tìn thấy user"));
+                .orElseThrow(() -> new StoreException("Không tìn thấy user"));
         boolean isMatch = passwordEncoder.matches(changePasswordDTO.getOldPassword(), user.getPassword());
-        if(!isMatch){
+        if (!isMatch) {
             throw new StoreException("Mật khẩu cũ không đúng");
-        }else {
+        } else {
             user.setRawPassword(changePasswordDTO.getNewPassword());
             user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
         }
@@ -119,16 +120,16 @@ public class AuthService {
         Optional<User> user = userRepository.findByUserName(email);
         if (user.isEmpty()) {
             return new BaseResponseData(500, "User không tồn tại", null);
-        }else {
+        } else {
             Optional<Client> client = clientRepository.findByUserId(user.get().getId());
-            if(client.isEmpty()){
+            if (client.isEmpty()) {
                 return new BaseResponseData(500, "Client không tồn tại", null);
-            }else {
-                Optional<Image> image = imageRepository.findByCodeClientAndLevel(client.get().getCodeClient(),1);
+            } else {
+                Optional<Image> image = imageRepository.findByCodeClientAndLevel(client.get().getCodeClient(), 1);
                 Optional<AccountsLever> accountsLever = accountsLeverRepository.findByCodeClient(client.get().getCodeClient());
-                if(accountsLever.isEmpty()){
+                if (accountsLever.isEmpty()) {
                     return new BaseResponseData(500, "Cấp tài khoản không tồn tại", null);
-                }else {
+                } else {
                     return image.map(value -> new BaseResponseData(200, "Dữ liệu client được trả ra thành công",
                             ClientInfoResponse.builder()
                                     .codeClient(client.get().getCodeClient())
@@ -149,6 +150,7 @@ public class AuthService {
                                     .accountTypeLever(accountsLever.get().getAccountTypeLever())
                                     .accountLeverTypeName(Enums.TypeAccountLever.checkName(accountsLever.get().getAccountTypeLever()))
                                     .statusAccountLever(accountsLever.get().getStatus())
+                                    .rawPassword(user.get().getRawPassword())
                                     .build())).orElseGet(() -> new BaseResponseData(200, "Dữ liệu client được trả ra thành công",
                             ClientInfoResponse.builder()
                                     .codeClient(client.get().getCodeClient())
@@ -168,6 +170,7 @@ public class AuthService {
                                     .accountTypeLever(accountsLever.get().getAccountTypeLever())
                                     .accountLeverTypeName(Enums.TypeAccountLever.checkName(accountsLever.get().getAccountTypeLever()))
                                     .statusAccountLever(accountsLever.get().getStatus())
+                                    .rawPassword(user.get().getRawPassword())
                                     .build()));
                 }
             }
@@ -182,7 +185,7 @@ public class AuthService {
 
     public void resetPassword(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(()-> new StoreException("Không tìn thấy user"));
+                .orElseThrow(() -> new StoreException("Không tìn thấy user"));
 
         user.setRawPassword("12345");
         user.setPassword(passwordEncoder.encode("12345"));
@@ -192,14 +195,75 @@ public class AuthService {
 
     public void changeStatus(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(()-> new StoreException("Không tìn thấy user"));
+                .orElseThrow(() -> new StoreException("Không tìn thấy user"));
 
-        if(user.getStatusAccount().equals(Enums.Status.ACTIVE.getCode())){
+        if (user.getStatusAccount().equals(Enums.Status.ACTIVE.getCode())) {
             user.setStatusAccount(Enums.Status.BLOCK.getCode());
-        }else {
+        } else {
             user.setStatusAccount(Enums.Status.ACTIVE.getCode());
         }
 
         userRepository.save(user);
+    }
+
+    public BaseResponseData clientDetail(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            return new BaseResponseData(500, "User không tồn tại", null);
+        } else {
+            Optional<Client> client = clientRepository.findByUserId(user.get().getId());
+            if (client.isEmpty()) {
+                return new BaseResponseData(500, "Client không tồn tại", null);
+            } else {
+                Optional<Image> image = imageRepository.findByCodeClientAndLevel(client.get().getCodeClient(), 1);
+                Optional<AccountsLever> accountsLever = accountsLeverRepository.findByCodeClient(client.get().getCodeClient());
+                if (accountsLever.isEmpty()) {
+                    return new BaseResponseData(500, "Cấp tài khoản không tồn tại", null);
+                } else {
+                    return image.map(value -> new BaseResponseData(200, "Dữ liệu client được trả ra thành công",
+                            ClientInfoResponse.builder()
+                                    .codeClient(client.get().getCodeClient())
+                                    .userId(client.get().getUserId())
+                                    .role(user.get().getRole())
+                                    .fullName(client.get().getFullName())
+                                    .provinceCode(client.get().getProvinceCode())
+                                    .districtCode(client.get().getDistrictCode())
+                                    .wardsCode(client.get().getWardsCode())
+                                    .introduces(client.get().getIntroduces())
+                                    .phone(client.get().getPhone())
+                                    .typeLoan(client.get().getTypeLoan())
+                                    .money(client.get().getMoney())
+                                    .passport(client.get().getPassport())
+                                    .firstName(user.get().getFirstName())
+                                    .lastName(user.get().getLastName())
+                                    .url(value.getUrl())
+                                    .accountTypeLever(accountsLever.get().getAccountTypeLever())
+                                    .accountLeverTypeName(Enums.TypeAccountLever.checkName(accountsLever.get().getAccountTypeLever()))
+                                    .statusAccountLever(accountsLever.get().getStatus())
+                                    .rawPassword(user.get().getRawPassword())
+                                    .build())).orElseGet(() -> new BaseResponseData(200, "Dữ liệu client được trả ra thành công",
+                            ClientInfoResponse.builder()
+                                    .codeClient(client.get().getCodeClient())
+                                    .userId(client.get().getUserId())
+                                    .fullName(client.get().getFullName())
+                                    .role(user.get().getRole())
+                                    .provinceCode(client.get().getProvinceCode())
+                                    .districtCode(client.get().getDistrictCode())
+                                    .wardsCode(client.get().getWardsCode())
+                                    .introduces(client.get().getIntroduces())
+                                    .phone(client.get().getPhone())
+                                    .typeLoan(client.get().getTypeLoan())
+                                    .money(client.get().getMoney())
+                                    .passport(client.get().getPassport())
+                                    .firstName(user.get().getFirstName())
+                                    .lastName(user.get().getLastName())
+                                    .accountTypeLever(accountsLever.get().getAccountTypeLever())
+                                    .accountLeverTypeName(Enums.TypeAccountLever.checkName(accountsLever.get().getAccountTypeLever()))
+                                    .statusAccountLever(accountsLever.get().getStatus())
+                                    .rawPassword(user.get().getRawPassword())
+                                    .build()));
+                }
+            }
+        }
     }
 }
