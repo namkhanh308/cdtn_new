@@ -63,7 +63,7 @@ public class Enums {
         TATCA(1, "Tất cả"),
         NHA(2,"Nhà"),
         CANHO(3,"Căn hộ"),
-        DAT(4,"Đất"),
+//        DAT(4,"Đất"),
         MATBANG(5,"Mặt bằng");
         private final Integer code;
         private final String name;

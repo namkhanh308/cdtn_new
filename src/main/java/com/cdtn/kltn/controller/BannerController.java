@@ -47,4 +47,14 @@ public class BannerController {
             return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
         }
     }
+
+    @GetMapping("/findAllBanner")
+    public ResponseEntity<BaseResponseData> findAllBanner() {
+        try{
+            List<?> list = bannerService.findAllBanner();
+            return ResponseEntity.ok(new BaseResponseData(200, "Success", list));
+        }catch (Exception e){
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
+        }
+    }
 }

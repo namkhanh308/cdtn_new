@@ -53,4 +53,8 @@ public class BannerService {
         bannerRepository.deleteById(id);
 
     }
+
+    public List<?> findAllBanner() {
+        return bannerRepository.findAll();
+    }
 }
