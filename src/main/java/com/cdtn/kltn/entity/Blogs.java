@@ -20,4 +20,6 @@ public class Blogs {
     private String content;
 
     private Integer lever;
+
+    private String url;
 }
