@@ -137,17 +137,17 @@ public interface NewsRepository extends JpaRepository<News, Long> {
     @Query(value = """
                 select t.rangeName, IFNULL(sub.count,'0') as rangeCount
                     from (
-                             SELECT '0 - 1000000' as rangeName, 1 AS rangeCode
+                             SELECT '0 - 1,000,000' as rangeName, 1 AS rangeCode
                              UNION ALL
-                             SELECT '1000000 - 5000000' as rangeName, 2
+                             SELECT '1,000,000 - 5,000,000' as rangeName, 2
                              UNION ALL
-                             SELECT '5000000 - 10000000' as rangeName, 3
+                             SELECT '5,000,000 - 10,000,000' as rangeName, 3
                              UNION ALL
-                             SELECT '10000000 - 20000000' as rangeName, 4
+                             SELECT '10,000,000 - 20,000,000' as rangeName, 4
                              UNION ALL
-                             SELECT '20000000 - 100000000' as rangeName, 5
+                             SELECT '20,000,000 - 100,000,000' as rangeName, 5
                              UNION ALL
-                             SELECT '> 1000000000' as rangeName, 6
+                             SELECT '> 1,000,000,000' as rangeName, 6
                          ) AS t
                 left join (
                 select  c.rangeCode, count(c.rangeCode) as count
@@ -195,7 +195,9 @@ public interface NewsRepository extends JpaRepository<News, Long> {
 
 
     @Query(value = """
-                select name_news as nameNews,
+                select
+                    n.id as id,
+                   name_news as nameNews,
                    n.address as address,
                    ifnull(p.area_use, 0) as areaUse,
                    ifnull(p.bath_count, 0) as bathCount,

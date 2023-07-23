@@ -1,6 +1,7 @@
 package com.cdtn.kltn.dto.news.respone;
 
 public interface FavouriteNewsResponse {
+    Long getId();
     String getNameNews();
     String getAddress();
     Long getAreaUse();
