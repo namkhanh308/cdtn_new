@@ -49,7 +49,7 @@ public class BlogsController {
         }
     }
 
-    @GetMapping("/getAllBlogs")
+    @GetMapping("/getDetails")
     public ResponseEntity<BaseResponseData> getDetailBlogs(@RequestParam Long id) {
         try{
             Blogs blog =  blogsService.detailBlogs(id);
