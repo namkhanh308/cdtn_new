@@ -33,6 +33,7 @@ public class SecurityConfig {
                         "/agency/**",
                         "/banner/**",
                         "/districts/**",
+                        "/news/favouriteNews",
                         "/wards/**",
                         "/common/**",
                         "/typepropery/**").permitAll()

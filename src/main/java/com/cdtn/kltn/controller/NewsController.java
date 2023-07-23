@@ -1,10 +1,7 @@
 package com.cdtn.kltn.controller;
 
 import com.cdtn.kltn.dto.base.response.BaseResponseData;
-import com.cdtn.kltn.dto.news.request.CreateNewsDTO;
-import com.cdtn.kltn.dto.news.request.CustomerNewsSearchDTO;
-import com.cdtn.kltn.dto.news.request.ManagerNewsSearchDTO;
-import com.cdtn.kltn.dto.news.request.PushTopDTO;
+import com.cdtn.kltn.dto.news.request.*;
 import com.cdtn.kltn.dto.news.respone.CustomerNewsDetailResponse;
 import com.cdtn.kltn.dto.news.respone.CustomerNewsResponse;
 import com.cdtn.kltn.dto.news.respone.ManagerNewsSearchRespone;
@@ -179,5 +176,14 @@ public class NewsController {
         }
     }
 
+    @GetMapping("/favouriteNews")
+    public ResponseEntity<BaseResponseData> findByFavoriteNews(@RequestBody FavouriteNewsDTO favouriteNewsDTO) {
+        try {
+            Page<?> news = newsService.findByFavoriteNews(favouriteNewsDTO);
+            return ResponseEntity.ok(new BaseResponseData(200, "Danh sách tin yêu thích", news));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
+        }
+    }
 
 }

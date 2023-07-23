@@ -62,6 +62,9 @@ public class AuthService {
         String jwtToken = jwtService.createToken(authentication);
         String jwtRefreshToken = jwtService.refreshToken(authentication);
 
+        if(user.getStatusAccount().equals(Enums.Status.BLOCK)){
+            return (new BaseResponseData(200, "Tài khoản của bạn đã bị khóa", null));
+        }
         return (new BaseResponseData(200, "Đăng nhập thành công", AuthenticationResponse.builder().refreshToken(jwtRefreshToken).token(jwtToken).build()));
     }
 

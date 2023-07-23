@@ -3,10 +3,7 @@ package com.cdtn.kltn.service;
 import com.cdtn.kltn.common.Enums;
 import com.cdtn.kltn.common.UtilsPage;
 import com.cdtn.kltn.dto.news.mapper.NewsMapper;
-import com.cdtn.kltn.dto.news.request.CreateNewsDTO;
-import com.cdtn.kltn.dto.news.request.CustomerNewsSearchDTO;
-import com.cdtn.kltn.dto.news.request.ManagerNewsSearchDTO;
-import com.cdtn.kltn.dto.news.request.PushTopDTO;
+import com.cdtn.kltn.dto.news.request.*;
 import com.cdtn.kltn.dto.news.respone.CustomerNewsDetailResponse;
 import com.cdtn.kltn.dto.news.respone.CustomerNewsForCodeCate;
 import com.cdtn.kltn.dto.news.respone.CustomerNewsResponse;
@@ -273,5 +270,10 @@ public class NewsService {
 
     public List<?> statisticsByDistrict(String provinceCode, Long month, Long year, String codeCategoryTypeProperty ) {
         return newsRepository.statisticsByDistrict(provinceCode,month,year,codeCategoryTypeProperty);
+    }
+
+    public Page<?> findByFavoriteNews(FavouriteNewsDTO favouriteNewsDTO) {
+        Pageable pageable = UtilsPage.getPage("DESC", "id", favouriteNewsDTO.getPage(), favouriteNewsDTO.getSize());
+        return newsRepository.favouriteNews(favouriteNewsDTO.getListId(), pageable);
     }
 }

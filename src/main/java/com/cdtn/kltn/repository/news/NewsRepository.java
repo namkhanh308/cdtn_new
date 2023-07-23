@@ -1,9 +1,6 @@
 package com.cdtn.kltn.repository.news;
 
-import com.cdtn.kltn.dto.news.respone.CustomerNewsForCodeCate;
-import com.cdtn.kltn.dto.news.respone.CustomerNewsResponse;
-import com.cdtn.kltn.dto.news.respone.StatisticsByDistrict;
-import com.cdtn.kltn.dto.news.respone.StatisticsByPrice;
+import com.cdtn.kltn.dto.news.respone.*;
 import com.cdtn.kltn.entity.News;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -138,61 +135,77 @@ public interface NewsRepository extends JpaRepository<News, Long> {
 
 
     @Query(value = """
-        select t.rangeName, IFNULL(sub.count,'0') as rangeCount
-            from (
-                     SELECT '0 - 1000000' as rangeName, 1 AS rangeCode
-                     UNION ALL
-                     SELECT '1000000 - 5000000' as rangeName, 2
-                     UNION ALL
-                     SELECT '5000000 - 10000000' as rangeName, 3
-                     UNION ALL
-                     SELECT '10000000 - 20000000' as rangeName, 4
-                     UNION ALL
-                     SELECT '20000000 - 100000000' as rangeName, 5
-                     UNION ALL
-                     SELECT '> 1000000000' as rangeName, 6
-                 ) AS t
-        left join (
-        select  c.rangeCode, count(c.rangeCode) as count
-        from (
-        select
-               (case
-                    when cast(price_loan as SIGNED INTEGER) > 0 and
-                         cast(price_loan as SIGNED INTEGER) < 1000000 then 1
-                    when cast(price_loan as SIGNED INTEGER) >= 1000000 and
-                         cast(price_loan as SIGNED INTEGER) < 5000000 then 2
-                    when cast(price_loan as SIGNED INTEGER) >= 5000000 and
-                         cast(price_loan as SIGNED INTEGER) < 10000000 then 3
-                    when cast(price_loan as SIGNED INTEGER) >= 10000000 and
-                         cast(price_loan as SIGNED INTEGER) < 20000000 then 4
-                    when cast(price_loan as SIGNED INTEGER) >= 20000000 and
-                         cast(price_loan as SIGNED INTEGER) < 100000000 then 5
-                    when cast(price_loan as SIGNED INTEGER) >= 1000000000 then 6 end) as rangeCode
-        from propertyinfo pi
-                 join property p on pi.code_property = p.code_property
-                 join news n on p.code_property = n.code_property
-        where p.province_code = ?1 and MONTH(n.date_create) = ?2 and YEAR(n.date_create) = ?3
-            and p.code_cate_type_property_category = ?4
-            ) as c
-        group by c.rangeCode) as sub on t.rangeCode = sub.rangeCode;
-    """, nativeQuery = true)
-    List<StatisticsByPrice> statisticsByPrice(String provinceCode, Long month, Long year, String codeCategory );
+                select t.rangeName, IFNULL(sub.count,'0') as rangeCount
+                    from (
+                             SELECT '0 - 1000000' as rangeName, 1 AS rangeCode
+                             UNION ALL
+                             SELECT '1000000 - 5000000' as rangeName, 2
+                             UNION ALL
+                             SELECT '5000000 - 10000000' as rangeName, 3
+                             UNION ALL
+                             SELECT '10000000 - 20000000' as rangeName, 4
+                             UNION ALL
+                             SELECT '20000000 - 100000000' as rangeName, 5
+                             UNION ALL
+                             SELECT '> 1000000000' as rangeName, 6
+                         ) AS t
+                left join (
+                select  c.rangeCode, count(c.rangeCode) as count
+                from (
+                select
+                       (case
+                            when cast(price_loan as SIGNED INTEGER) > 0 and
+                                 cast(price_loan as SIGNED INTEGER) < 1000000 then 1
+                            when cast(price_loan as SIGNED INTEGER) >= 1000000 and
+                                 cast(price_loan as SIGNED INTEGER) < 5000000 then 2
+                            when cast(price_loan as SIGNED INTEGER) >= 5000000 and
+                                 cast(price_loan as SIGNED INTEGER) < 10000000 then 3
+                            when cast(price_loan as SIGNED INTEGER) >= 10000000 and
+                                 cast(price_loan as SIGNED INTEGER) < 20000000 then 4
+                            when cast(price_loan as SIGNED INTEGER) >= 20000000 and
+                                 cast(price_loan as SIGNED INTEGER) < 100000000 then 5
+                            when cast(price_loan as SIGNED INTEGER) >= 1000000000 then 6 end) as rangeCode
+                from propertyinfo pi
+                         join property p on pi.code_property = p.code_property
+                         join news n on p.code_property = n.code_property
+                where p.province_code = ?1 and MONTH(n.date_create) = ?2 and YEAR(n.date_create) = ?3
+                    and p.code_cate_type_property_category = ?4
+                    ) as c
+                group by c.rangeCode) as sub on t.rangeCode = sub.rangeCode;
+            """, nativeQuery = true)
+    List<StatisticsByPrice> statisticsByPrice(String provinceCode, Long month, Long year, String codeCategory);
 
 
     @Query(value = """
-        select di.district_name as districtName, IFNULL(ne.count,0) as count from
-        (select district_code, district_name
-         from districs where province_code = ?1) as di left join (
-            select p.district_code, count(n.id) as count
-            from news n
-                     join property p on n.code_property = p.code_property
-            where p.province_code = ?1
-              and MONTH(n.date_create) = ?2
-              and YEAR(n.date_create) = ?3
-              and p.code_cate_type_property_category = ?4
-              group by p.district_code
-              )
-               as ne on di.district_code = ne.district_code
-    """, nativeQuery = true)
+                select di.district_name as districtName, IFNULL(ne.count,0) as count from
+                (select district_code, district_name
+                 from districs where province_code = ?1) as di left join (
+                    select p.district_code, count(n.id) as count
+                    from news n
+                             join property p on n.code_property = p.code_property
+                    where p.province_code = ?1
+                      and MONTH(n.date_create) = ?2
+                      and YEAR(n.date_create) = ?3
+                      and p.code_cate_type_property_category = ?4
+                      group by p.district_code
+                      )
+                       as ne on di.district_code = ne.district_code
+            """, nativeQuery = true)
     List<StatisticsByDistrict> statisticsByDistrict(String provinceCode, Long month, Long year, String codeCategory);
+
+
+    @Query(value = """
+                select name_news as nameNews,
+                   n.address as address,
+                   ifnull(p.area_use, 0) as areaUse,
+                   ifnull(p.bath_count, 0) as bathCount,
+                   ifnull(p.living_count, 0) as livingCount,
+                   ifnull(p.kitchen_count, 0) as kitchenCount,
+                   ifnull(p.bed_count, 0) as bedCount,
+                   il.url as url
+                from news n join propertyinfo p on n.code_property = p.code_property
+                join imagelimit1 il on il.property_code = n.code_property
+            where n.id in ?1
+            """, nativeQuery = true)
+    Page<FavouriteNewsResponse> favouriteNews(List<Long> listId, Pageable pageable);
 }
