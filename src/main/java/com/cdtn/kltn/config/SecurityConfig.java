@@ -36,8 +36,7 @@ public class SecurityConfig {
                         "/news/favouriteNews",
                         "/wards/**",
                         "/common/**",
-                        "/blogs/getAllBlogs",
-                        "/blogs/getDetails",
+                        "/blogs/**",
                         "/typepropery/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
