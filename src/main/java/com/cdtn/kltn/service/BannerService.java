@@ -3,7 +3,7 @@ package com.cdtn.kltn.service;
 import com.cdtn.kltn.common.StreamUtil;
 import com.cdtn.kltn.entity.Banner;
 import com.cdtn.kltn.exception.StoreException;
-import com.cdtn.kltn.repository.Banner.BannerRepository;
+import com.cdtn.kltn.repository.banner.BannerRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,6 @@ public class BannerService {
 
     private final BannerRepository bannerRepository;
 
-    @Transactional
     public void addBanner(List<Banner> bannerList){
         if(bannerList.isEmpty()){
             throw new StoreException("Danh sách banner trống");
@@ -29,7 +28,6 @@ public class BannerService {
         }
     }
 
-    @Transactional
     public void updateBanner(List<Banner> bannerList){
         if(bannerList.isEmpty()){
             throw new StoreException("Danh sách banner trống");

@@ -1,4 +1,4 @@
-package com.cdtn.kltn.repository.Banner;
+package com.cdtn.kltn.repository.banner;
 
 import com.cdtn.kltn.entity.Banner;
 import org.springframework.data.jpa.repository.JpaRepository;

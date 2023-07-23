@@ -1,4 +1,4 @@
-package com.cdtn.kltn.repository.Agency;
+package com.cdtn.kltn.repository.agency;
 
 import com.cdtn.kltn.entity.Agency;
 import org.springframework.data.domain.Page;
