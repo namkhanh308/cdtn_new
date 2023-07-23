@@ -176,7 +176,7 @@ public class NewsController {
         }
     }
 
-    @GetMapping("/favouriteNews")
+    @PostMapping("/favouriteNews")
     public ResponseEntity<BaseResponseData> findByFavoriteNews(@RequestBody FavouriteNewsDTO favouriteNewsDTO) {
         try {
             Page<?> news = newsService.findByFavoriteNews(favouriteNewsDTO);

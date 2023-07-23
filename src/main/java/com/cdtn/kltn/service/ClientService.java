@@ -1,20 +1,22 @@
 package com.cdtn.kltn.service;
 
-import com.cdtn.kltn.dto.base.response.BaseResponseData;
 import com.cdtn.kltn.dto.client.mapper.ClientMapper;
 import com.cdtn.kltn.dto.client.request.RechargeDTO;
 import com.cdtn.kltn.dto.client.request.RegistrationClientDTO;
 import com.cdtn.kltn.entity.Client;
 import com.cdtn.kltn.entity.Image;
+import com.cdtn.kltn.entity.RechargeHistory;
 import com.cdtn.kltn.entity.User;
 import com.cdtn.kltn.exception.StoreException;
 import com.cdtn.kltn.repository.client.ClientRepository;
 import com.cdtn.kltn.repository.image.ImageRepository;
+import com.cdtn.kltn.repository.rechargehistory.RechargeHistoryRepository;
 import com.cdtn.kltn.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -31,6 +33,7 @@ public class ClientService {
 
     private final ClientMapper clientMapper;
 
+    private final RechargeHistoryRepository historyRepository;
 
     @Transactional
     public void saveClient(RegistrationClientDTO registrationClientDTO) {
@@ -51,7 +54,7 @@ public class ClientService {
             imageRepository.save(image.get());
         }
         //Set lại thông tin client
-        client = clientMapper.updateClient(client,registrationClientDTO);
+        client = clientMapper.updateClient(client, registrationClientDTO);
         //Set lại thông tin user
         user.setFirstName(registrationClientDTO.getFirstName());
         user.setLastName(registrationClientDTO.getLastName());
@@ -63,7 +66,7 @@ public class ClientService {
     @Transactional
     public Client findByCodeClient(String codeClient) {
         return clientRepository.findByCodeClient(codeClient)
-                .orElseThrow(()-> new StoreException("Hiển thị thông tin khách hàng thất bại"));
+                .orElseThrow(() -> new StoreException("Hiển thị thông tin khách hàng thất bại"));
     }
 
     @Transactional
@@ -71,7 +74,19 @@ public class ClientService {
         Client client = clientRepository.findByCodeClient(rechargeDTO.getCodeClient())
                 .orElseThrow(() -> new StoreException("Client không tồn tại"));
         client.setMoney(String.valueOf(Long.parseLong(client.getMoney()) + rechargeDTO.getMoney()));
+
+        historyRepository.save(RechargeHistory.builder()
+                .codeClient(client.getCodeClient())
+                .dateRecharge(LocalDateTime.now())
+                .money(String.valueOf(rechargeDTO.getMoney()))
+                .build());
+
+        Client admin = getAdmin();
+        admin.setMoney(String.valueOf(Long.parseLong(admin.getMoney()) + rechargeDTO.getMoney()));
+
         clientRepository.save(client);
+        clientRepository.save(admin);
+
         return client;
     }
 
@@ -80,6 +95,10 @@ public class ClientService {
                 .orElseThrow(() -> new StoreException("Client không tồn tại"));
         client.setPhone(phone);
         clientRepository.save(client);
+    }
+
+    private Client getAdmin() {
+        return clientRepository.findAdmin();
     }
 
 }

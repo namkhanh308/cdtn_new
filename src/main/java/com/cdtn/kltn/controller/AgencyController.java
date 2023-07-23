@@ -1,12 +1,8 @@
 package com.cdtn.kltn.controller;
 
 import com.cdtn.kltn.dto.base.response.BaseResponseData;
-import com.cdtn.kltn.dto.client.request.RegistrationClientDTO;
-import com.cdtn.kltn.dto.client.respone.HomeClientResponse;
 import com.cdtn.kltn.entity.Agency;
-import com.cdtn.kltn.repository.Agency.AgencyRepository;
 import com.cdtn.kltn.service.AgencyService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +18,10 @@ public class AgencyController {
 
     @PostMapping("/saveAgency")
     public ResponseEntity<BaseResponseData> saveClient(@RequestBody Agency agency) {
-        try{
+        try {
             agencyService.saveAgency(agency);
             return ResponseEntity.ok(new BaseResponseData(200, "Success", "Đăng ký môi giới thành công"));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
         }
     }
@@ -33,9 +29,9 @@ public class AgencyController {
     @GetMapping("/findAllAgency")
     public ResponseEntity<BaseResponseData> findAllAgency(@RequestParam String nameSearch, @RequestParam String provinceCode, int page, int size) {
         try {
-            Page<?> agencyList  = agencyService.findAllAgency(nameSearch, provinceCode, page, size);
+            Page<?> agencyList = agencyService.findAllAgency(nameSearch, provinceCode, page, size);
             return ResponseEntity.ok(new BaseResponseData(200, "Hiển thị danh sách môi giới thành công", agencyList));
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponseData(500, "Hiển thị danh sách môi giới thất bại", null));
         }
     }
@@ -45,7 +41,7 @@ public class AgencyController {
         try {
             agencyService.deleteAgency(id);
             return ResponseEntity.ok(new BaseResponseData(200, "Xóa môi giới thành công", null));
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponseData(500, "Xóa môi giới thất bại", null));
         }
     }

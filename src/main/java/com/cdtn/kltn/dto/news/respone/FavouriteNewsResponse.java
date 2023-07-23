@@ -9,4 +9,5 @@ public interface FavouriteNewsResponse {
     Long getKitchenCount();
     Long getBedCount();
     String getUrl();
+    String getPriceLoan();
 }

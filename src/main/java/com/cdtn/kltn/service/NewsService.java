@@ -91,7 +91,7 @@ public class NewsService {
                 news.setDateCreate(createNewsDTO.getDateCreate());
                 if (news.getDateExpiration().isAfter(accountsLever.getEndDate())) {
                     news.setDateExpiration(accountsLever.getEndDate());
-                }else{
+                } else {
                     news.setDateExpiration(createNewsDTO.getDateExpiration());
                 }
                 news.setStatusNews(Enums.StatusNews.DANGHOATDONG.getCode());
@@ -167,14 +167,14 @@ public class NewsService {
             Property property = propertyRepository.findByCodeProperty(news.getCodeProperty()).orElseThrow(() -> new StoreException("Không tìm thấy tài sản phù hợp"));
             Client client = clientRepository
                     .findByCodeClient(property.getCodeClient()).orElseThrow(() -> new StoreException("Không tìm thấy cấp tài khoản"));
-            if(Long.valueOf(client.getMoney()) - 50000 >= 0){
+            if (Long.valueOf(client.getMoney()) - 50000 >= 0) {
                 news = newsMapper.pushTopNews(pushTopDTO, news);
                 newsRepository.save(news);
 
                 client.setMoney(String.valueOf(Long.valueOf(client.getMoney()) - 50000));
                 clientRepository.save(client);
 
-            }else {
+            } else {
                 throw new StoreException("Tài khoản của quý khách không đủ 50.000 đồng để đẩy top. Xin vui lòng nạp thêm");
             }
 
@@ -246,7 +246,7 @@ public class NewsService {
     }
 
     public List<CustomerNewsResponse> findNewSame(String codeTypeProperty, String codeCateTypePropertyCategory, String provinceCode, Long id) {
-        return newsRepository.getNewsSame(codeTypeProperty,codeCateTypePropertyCategory,provinceCode, id);
+        return newsRepository.getNewsSame(codeTypeProperty, codeCateTypePropertyCategory, provinceCode, id);
     }
 
     public List<CustomerNewsForCodeCate> findNewByCodeCate() {
@@ -264,16 +264,17 @@ public class NewsService {
         return newsRepository.outstandingProject();
     }
 
-    public List<?> statisticsByPrice(String provinceCode, Long month, Long year, String codeCategoryTypeProperty ) {
-        return newsRepository.statisticsByPrice(provinceCode,month,year,codeCategoryTypeProperty);
+    public List<?> statisticsByPrice(String provinceCode, Long month, Long year, String codeCategoryTypeProperty) {
+        return newsRepository.statisticsByPrice(provinceCode, month, year, codeCategoryTypeProperty);
     }
 
-    public List<?> statisticsByDistrict(String provinceCode, Long month, Long year, String codeCategoryTypeProperty ) {
-        return newsRepository.statisticsByDistrict(provinceCode,month,year,codeCategoryTypeProperty);
+    public List<?> statisticsByDistrict(String provinceCode, Long month, Long year, String codeCategoryTypeProperty) {
+        return newsRepository.statisticsByDistrict(provinceCode, month, year, codeCategoryTypeProperty);
     }
 
     public Page<?> findByFavoriteNews(FavouriteNewsDTO favouriteNewsDTO) {
         Pageable pageable = UtilsPage.getPage("DESC", "id", favouriteNewsDTO.getPage(), favouriteNewsDTO.getSize());
         return newsRepository.favouriteNews(favouriteNewsDTO.getListId(), pageable);
     }
+
 }

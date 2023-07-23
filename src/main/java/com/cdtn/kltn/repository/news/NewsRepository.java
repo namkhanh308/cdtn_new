@@ -202,7 +202,8 @@ public interface NewsRepository extends JpaRepository<News, Long> {
                    ifnull(p.living_count, 0) as livingCount,
                    ifnull(p.kitchen_count, 0) as kitchenCount,
                    ifnull(p.bed_count, 0) as bedCount,
-                   il.url as url
+                   il.url as url,
+                   p.price_loan as priceLoan
                 from news n join propertyinfo p on n.code_property = p.code_property
                 join imagelimit1 il on il.property_code = n.code_property
             where n.id in ?1
