@@ -35,7 +35,7 @@ public class QueryJdbcUltils {
         };
     }
 
-    public static String convertLocalDateTimeISO(LocalDateTime iso){
+    public static String convertLocalDateTimeISO(LocalDateTime iso) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return iso.format(formatter);
     }

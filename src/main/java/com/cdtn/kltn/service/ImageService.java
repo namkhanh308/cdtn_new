@@ -13,11 +13,11 @@ import java.util.Objects;
 public class ImageService {
     private final ImageRepository imageRepository;
 
-    List<Image> findAllByPropertyCode(String propertyCode){
+    List<Image> findAllByPropertyCode(String propertyCode) {
         return imageRepository.findAllByPropertyCode(propertyCode);
     }
 
-    public Long getIndex(){
+    public Long getIndex() {
         return Objects.isNull(imageRepository.getIndex()) ? 0 : imageRepository.getIndex();
     }
 }

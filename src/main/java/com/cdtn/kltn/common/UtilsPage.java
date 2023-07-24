@@ -50,13 +50,13 @@ public class UtilsPage {
         if (Constant.ASC.equalsIgnoreCase(sortDir)) {
             pageable = PageRequest.of(page, size, Sort.Direction.ASC, sortField);
         } else {
-            pageable = PageRequest.of(page , size, Sort.Direction.DESC, sortField);
+            pageable = PageRequest.of(page, size, Sort.Direction.DESC, sortField);
         }
         return pageable;
     }
 
     public static Pageable getPageWithSort(int page, int size, Sort sort) {
-        return PageRequest.of(page , size, sort);
+        return PageRequest.of(page, size, sort);
     }
 
     public static Pageable getPageWithJpaSortUnsafe(String sortDir, String sortField, int page, int size) {
@@ -76,7 +76,7 @@ public class UtilsPage {
         } else {
             sort = JpaSort.unsafe(Sort.Direction.DESC, "length(" + sortField + ") desc, " + sortField);
         }
-        return PageRequest.of(page , size, sort);
+        return PageRequest.of(page, size, sort);
     }
 
 

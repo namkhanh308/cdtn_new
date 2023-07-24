@@ -7,6 +7,4 @@ import org.springframework.data.domain.Page;
 
 public interface CustomNewsRepository {
     Page<ManagerNewsSearchRespone> findAllNewsManager(ManagerNewsSearchDTO managerNewsSearchDTO);
-
-
 }

@@ -14,7 +14,7 @@ public class WardsService {
 
     private final WardsRepository wardsRepository;
 
-    public BaseResponseData findAllByDistrictCode(String districsCode){
+    public BaseResponseData findAllByDistrictCode(String districsCode) {
         List<Wards> districsList = wardsRepository.findAllByDistrictCode(districsCode);
         return !districsList.isEmpty() ?
                 new BaseResponseData(200, "Hiển thị danh sách phường, xã thành công", districsList) :

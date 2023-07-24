@@ -10,6 +10,7 @@ import java.util.Optional;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
     Optional<Client> findByUserId(Long id);
+
     Optional<Client> findByCodeClient(String codeClient);
 
     @Query(value = "SELECT c.* FROM client c JOIN users u ON c.user_id = u.id WHERE u.role = 'ROLE_ADMIN'", nativeQuery = true)

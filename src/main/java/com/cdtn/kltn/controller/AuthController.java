@@ -25,16 +25,18 @@ public class AuthController {
     public ResponseEntity<BaseResponseData> login(@RequestBody @Valid AuthenticationRequest request) {
         return ResponseEntity.ok(authService.authenticate(request));
     }
+
     @PostMapping("/registerAccount")
-    public ResponseEntity<BaseResponseData>  login(@RequestBody @Valid RegistrationDTO request) {
+    public ResponseEntity<BaseResponseData> login(@RequestBody @Valid RegistrationDTO request) {
         return ResponseEntity.ok(authService.registerUser(request));
     }
+
     @PostMapping("/changePassword")
-    public ResponseEntity<BaseResponseData> changePassword(@RequestBody @Valid ChangePasswordDTO changePasswordDTO){
+    public ResponseEntity<BaseResponseData> changePassword(@RequestBody @Valid ChangePasswordDTO changePasswordDTO) {
         try {
             authService.changePassword(changePasswordDTO);
             return ResponseEntity.ok(new BaseResponseData(200, "Thay đổi mật khẩu thành công", null));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
         }
     }
@@ -47,7 +49,7 @@ public class AuthController {
     }
 
     @GetMapping("/findAllUser")
-    public ResponseEntity<BaseResponseData> findAllUser(@RequestParam String searchName, @RequestParam int page, @RequestParam int size){
+    public ResponseEntity<BaseResponseData> findAllUser(@RequestParam String searchName, @RequestParam int page, @RequestParam int size) {
         try {
             Page<?> list = authService.findAllUser(searchName, page, size);
             return ResponseEntity.ok(new BaseResponseData(200, "Hiển thị danh sách tài khoản thành công", list));
@@ -57,7 +59,7 @@ public class AuthController {
     }
 
     @GetMapping("/resetPassword")
-    public ResponseEntity<BaseResponseData> resetPassword(@RequestParam Long id){
+    public ResponseEntity<BaseResponseData> resetPassword(@RequestParam Long id) {
         try {
             authService.resetPassword(id);
             return ResponseEntity.ok(new BaseResponseData(200, "Reset mật khẩu thành công", null));
@@ -67,7 +69,7 @@ public class AuthController {
     }
 
     @GetMapping("/changeStatus")
-    public ResponseEntity<BaseResponseData> changeStatus(@RequestParam Long id){
+    public ResponseEntity<BaseResponseData> changeStatus(@RequestParam Long id) {
         try {
             authService.changeStatus(id);
             return ResponseEntity.ok(new BaseResponseData(200, "Reset mật khẩu thành công", null));
@@ -81,8 +83,6 @@ public class AuthController {
     public ResponseEntity<BaseResponseData> showClientInfo(@RequestParam Long id) {
         return ResponseEntity.ok(authService.clientDetail(id));
     }
-
-
 
 
 }

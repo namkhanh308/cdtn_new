@@ -19,17 +19,19 @@ public class BannerService {
 
     private final BannerRepository bannerRepository;
 
-    public void addBanner(List<Banner> bannerList){
-        if(bannerList.isEmpty()){
+    public void addBanner(List<Banner> bannerList) {
+        if (bannerList.isEmpty()) {
             throw new StoreException("Danh sách banner trống");
-        }else {
-            bannerList.forEach(banner -> {banner.setDateUpdated(LocalDateTime.now());});
+        } else {
+            bannerList.forEach(banner -> {
+                banner.setDateUpdated(LocalDateTime.now());
+            });
             bannerRepository.saveAll(bannerList);
         }
     }
 
-    public void updateBanner(List<Banner> bannerList){
-        if(bannerList.isEmpty()){
+    public void updateBanner(List<Banner> bannerList) {
+        if (bannerList.isEmpty()) {
             throw new StoreException("Danh sách banner trống");
         }
         bannerList.forEach(banner -> {
@@ -46,7 +48,7 @@ public class BannerService {
     }
 
     @Transactional
-    public void deleteBanner(Long id){
+    public void deleteBanner(Long id) {
         bannerRepository.findById(id).orElseThrow(() -> new StoreException("Không tìm thấy banner có id = " + id));
         bannerRepository.deleteById(id);
 

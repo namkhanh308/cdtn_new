@@ -37,9 +37,9 @@ public class AccountsLeverService {
                     && LocalDateTime.now().isBefore(accountsLever.getEndDate())) {
                 //check với số tin hiện tại
                 Integer countUpload = newsRepository.findCountNewsActiveByCodeClient(accountsLever.getCodeClient());
-                if(countUpload >= accountsLever.getCountNewsUpload()){
+                if (countUpload >= accountsLever.getCountNewsUpload()) {
                     accountsLever.setStatus(0);
-                }else {
+                } else {
                     accountsLever.setStatus(1);
                 }
                 //end

@@ -59,19 +59,19 @@ public class CustomNewsRepositoryImp implements CustomNewsRepository {
 
         String select =
                 """     
-                            select 
-                            n.id as id,
-                            n.name_news as nameNews,
-                            n.date_create as dateCreate,
-                            n.date_expiration as dateExpiration,
-                            n.status_news as statusNews,
-                            (select url from image where image.property_code = n.code_property and level = 2 limit 1) as url,
-                            n.address as address,
-                            n.time_up_top_start as timeUpTopStart,
-                            n.time_up_top_end as timeUpTopEnd,
-                            n.status_up_top as statusUpTop
-                            from news n
-                            join property p on n.code_property = p.code_property and n.status_news <> 3  \s \s""";
+                        select 
+                        n.id as id,
+                        n.name_news as nameNews,
+                        n.date_create as dateCreate,
+                        n.date_expiration as dateExpiration,
+                        n.status_news as statusNews,
+                        (select url from image where image.property_code = n.code_property and level = 2 limit 1) as url,
+                        n.address as address,
+                        n.time_up_top_start as timeUpTopStart,
+                        n.time_up_top_end as timeUpTopEnd,
+                        n.status_up_top as statusUpTop
+                        from news n
+                        join property p on n.code_property = p.code_property and n.status_news <> 3  \s \s""";
 
         List<String> whereList = new ArrayList<>();
 

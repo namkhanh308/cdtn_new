@@ -3,6 +3,8 @@ package com.cdtn.kltn.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Entity
@@ -22,4 +24,6 @@ public class Blogs {
     private Integer lever;
 
     private String url;
+
+    private LocalDateTime dateCreate;
 }

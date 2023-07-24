@@ -1,9 +1,9 @@
 package com.cdtn.kltn.controller;
 
-import com.cdtn.kltn.dto.pagination.PagingResponeDTO;
-import com.cdtn.kltn.dto.property.request.PropertySearchDTO;
 import com.cdtn.kltn.dto.base.response.BaseResponseData;
+import com.cdtn.kltn.dto.pagination.PagingResponeDTO;
 import com.cdtn.kltn.dto.property.request.CreatePropertyDTO;
+import com.cdtn.kltn.dto.property.request.PropertySearchDTO;
 import com.cdtn.kltn.service.PropertyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +21,11 @@ public class PropertyController {
 
     @PostMapping("/loan/saveProperty")
     public ResponseEntity<BaseResponseData> saveProperty(@RequestBody @Valid CreatePropertyDTO propertyDTO) {
-        try{
+        try {
             propertyService.createProperty(propertyDTO);
             return ResponseEntity.ok(new BaseResponseData(200, "Success", null));
-        }catch (Exception e){
-            return ResponseEntity.ok(new BaseResponseData(500,e.getMessage(),null));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
         }
     }
 
@@ -34,8 +34,8 @@ public class PropertyController {
         try {
             propertyService.deleteProperty(codeProperty);
             return ResponseEntity.ok(new BaseResponseData(200, "Xóa tài sản thành công", null));
-        }catch (Exception e){
-            return ResponseEntity.ok(new BaseResponseData(500,e.getMessage(),null));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
         }
     }
 
@@ -49,18 +49,18 @@ public class PropertyController {
         try {
             PagingResponeDTO pagingResponeDTO = propertyService.findAllPropertyManager(brp);
             return ResponseEntity.ok(new BaseResponseData(200, "Danh sách tài sản hiển thị thành công", pagingResponeDTO));
-        }catch (Exception e){
-            return ResponseEntity.ok(new BaseResponseData(500,e.getMessage(),null));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
         }
     }
 
     @GetMapping("/loan/findPropertyDetail")
     public ResponseEntity<BaseResponseData> findPropertyDetail(@RequestParam String codeProperty) {
-        try{
+        try {
             CreatePropertyDTO createPropertyDTO = propertyService.findPropertyDetail(codeProperty);
             return ResponseEntity.ok(new BaseResponseData(200, "Chi tiết tài sản hiển thị thành công", createPropertyDTO));
-        }catch (Exception e){
-            return ResponseEntity.ok(new BaseResponseData(500,e.getMessage(),null));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
         }
     }
 }

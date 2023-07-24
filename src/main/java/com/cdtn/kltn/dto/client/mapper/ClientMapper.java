@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ClientMapper {
-    public Client updateClient(Client client,RegistrationClientDTO registrationClientDTO){
+    public Client updateClient(Client client, RegistrationClientDTO registrationClientDTO) {
         client.setProvinceCode(registrationClientDTO.getProvinceCode());
         client.setDistrictCode(registrationClientDTO.getDistrictCode());
         client.setWardsCode(registrationClientDTO.getWardsCode());

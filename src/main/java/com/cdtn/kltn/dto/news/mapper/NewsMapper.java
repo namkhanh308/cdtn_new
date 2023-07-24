@@ -9,30 +9,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class NewsMapper {
 
-    public News createNews(CreateNewsDTO createNewsDTO, String address){
+    public News createNews(CreateNewsDTO createNewsDTO, String address) {
         return News.builder()
-                    .nameNews(createNewsDTO.getNameNews())
-                    .dateCreate(createNewsDTO.getDateCreate())
-                    .dateExpiration(createNewsDTO.getDateExpiration())
-                    .codeProperty(createNewsDTO.getCodeProperty())
-                    .statusNews(Enums.StatusNews.DANGHOATDONG.getCode())
-                    .address(address)
-                    .statusUpTop(Enums.StatusUpTop.HETHAN.getCode())
-                    .build();
-    }
-    /*
-    public CreateNewsDTO createNewsDetailRespones(News news){
-        return CreateNewsDTO.builder()
-                .codeProperty(news.getCodeProperty())
-                .dateCreate(news.getDateCreate())
-                .dateExpiration(news.getDateExpiration())
-                .id(news.getId())
-                .nameNews(news.getNameNews())
+                .nameNews(createNewsDTO.getNameNews())
+                .dateCreate(createNewsDTO.getDateCreate())
+                .dateExpiration(createNewsDTO.getDateExpiration())
+                .codeProperty(createNewsDTO.getCodeProperty())
+                .statusNews(Enums.StatusNews.DANGHOATDONG.getCode())
+                .address(address)
+                .statusUpTop(Enums.StatusUpTop.HETHAN.getCode())
                 .build();
     }
-     */
 
-    public News pushTopNews(PushTopDTO pushTopDTO, News news){
+    public News pushTopNews(PushTopDTO pushTopDTO, News news) {
         news.setTimeUpTopStart(pushTopDTO.getTimeUpTopStart());
         news.setTimeUpTopEnd(pushTopDTO.getTimeUpTopEnd());
         news.setStatusUpTop(Enums.StatusUpTop.DANGHOATDONG.getCode());

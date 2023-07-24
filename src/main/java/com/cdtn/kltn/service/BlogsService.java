@@ -9,27 +9,35 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BlogsService {
 
     private final BlogsRepository blogsRepository;
 
-    public void addBlogs(Blogs blogs){
+    public void addBlogs(Blogs blogs) {
+        blogs.setDateCreate(LocalDateTime.now());
         blogsRepository.save(blogs);
     }
 
-    public void deleteBlogs(Long id){
+    public void deleteBlogs(Long id) {
         blogsRepository.deleteById(id);
     }
 
-    public Page<?> getPage(String searchName, int page, int size){
+    public Page<?> getPage(String searchName, int page, int size) {
         Pageable pageable = UtilsPage.getPage("DESC", "id", page, size);
         return blogsRepository.findAllByTitleContaining(searchName, pageable);
     }
 
-    public Blogs detailBlogs(Long id){
+    public Blogs detailBlogs(Long id) {
         return blogsRepository.findById(id).orElseThrow(() -> new StoreException("Không tìm thấy blogs"));
+    }
+
+    public List<Blogs> getList() {
+        return blogsRepository.findAll();
     }
 
 }

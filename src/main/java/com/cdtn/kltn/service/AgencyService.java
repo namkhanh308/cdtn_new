@@ -14,7 +14,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +27,7 @@ public class AgencyService {
 
     private final DistricsRepository districsRepository;
 
-    public void saveAgency(Agency agencyRequest){
+    public void saveAgency(Agency agencyRequest) {
         if (!Objects.isNull(agencyRequest.getId())) {
             Optional<Agency> agency = agencyRepository.findById(agencyRequest.getId());
             if (agency.isEmpty()) {
@@ -35,17 +38,17 @@ public class AgencyService {
         agencyRepository.save(agencyRequest);
     }
 
-    public Page<Agency> findAllAgency(String nameSearch, String provinceCode, int page, int size){
+    public Page<Agency> findAllAgency(String nameSearch, String provinceCode, int page, int size) {
         Pageable pageable = UtilsPage.getPage("DESC", "id", page, size);
         List<Districs> districsList = districsRepository.findAll();
         Map<Long, Districs> mapDistrictsById = StreamUtil.toMap(districsList, Districs::getId);
         Page<Agency> agencyPage = agencyRepository.findAllAgency(nameSearch, provinceCode, pageable);
         return agencyPage.map(agency -> {
             String[] array = agency.getDistrict1st().split(",");
-            StringBuilder districtsName1st =  new StringBuilder();
+            StringBuilder districtsName1st = new StringBuilder();
             for (String element : array) {
                 Districs districs = mapDistrictsById.getOrDefault(Long.valueOf(element), null);
-                if(Objects.nonNull(districs)){
+                if (Objects.nonNull(districs)) {
                     districtsName1st.append(districs.getDistrictName());
                     districtsName1st.append(",");
                 }
@@ -56,7 +59,7 @@ public class AgencyService {
     }
 
     @Transactional
-    public void deleteAgency(Long id){
+    public void deleteAgency(Long id) {
         Agency agency = agencyRepository.findById(id).orElseThrow(() -> new StoreException("Không tìm thấy agency"));
         agencyRepository.delete(agency);
     }

@@ -20,9 +20,9 @@ public class AccountsLeverController {
     public ResponseEntity<BaseResponseData> login(@RequestBody @Valid AccountsLeverSwitchDTO accountsLeverSwitchDTO) {
         try {
             accountsLeverService.switchAccountLever(accountsLeverSwitchDTO);
-            return ResponseEntity.ok(new BaseResponseData(200, "Chuyển đổi gói tài khoản thành công",null));
-        }catch (Exception e){
-            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(),null));
+            return ResponseEntity.ok(new BaseResponseData(200, "Chuyển đổi gói tài khoản thành công", null));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
         }
     }
 }

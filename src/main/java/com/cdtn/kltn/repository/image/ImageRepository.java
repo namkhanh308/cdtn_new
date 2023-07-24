@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface ImageRepository extends JpaRepository<Image, Long> {
     Optional<Image> findByCodeClient(String clientCode);
 
-    @Query(value = "select id from image order by id desc limit 1",nativeQuery = true)
+    @Query(value = "select id from image order by id desc limit 1", nativeQuery = true)
     Long getIndex();
 
     Optional<Image> findByCodeClientAndLevel(String clientCode, Integer level);

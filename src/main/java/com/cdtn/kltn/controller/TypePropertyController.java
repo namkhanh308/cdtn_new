@@ -17,16 +17,18 @@ public class TypePropertyController {
     private final TypePropertyService typePropertyService;
 
     @RequestMapping("/findAllByCodeTypePropertySearch")
-    public ResponseEntity<BaseResponseData> findAllByCodeTypePropertyCategorySearch(@RequestParam Long codeTypePropertyCategory){
+    public ResponseEntity<BaseResponseData> findAllByCodeTypePropertyCategorySearch(@RequestParam Long codeTypePropertyCategory) {
         return ResponseEntity.ok(typePropertyService.findAllByCodeCateTypePropertyCategory(codeTypePropertyCategory));
     }
+
     @RequestMapping("/findAllByCodeTypeProperty")
-    public ResponseEntity<BaseResponseData> findAllByCodeTypePropertyCategory(@RequestParam Long codeTypePropertyCategory){
+    public ResponseEntity<BaseResponseData> findAllByCodeTypePropertyCategory(@RequestParam Long codeTypePropertyCategory) {
         return ResponseEntity.ok(typePropertyService.findAllByCodeTypePropertyCategory(codeTypePropertyCategory));
     }
+
     @RequestMapping("/findAllTypePropertyAndCategoryTypeProperty")
-    public ResponseEntity<BaseResponseData> findAllTypePropertyAndCategoryTypeProperty(){
-        return ResponseEntity.ok(new BaseResponseData(200, "Success",typePropertyService.findAllTypePropertyAndCategoryTypeProperty()));
+    public ResponseEntity<BaseResponseData> findAllTypePropertyAndCategoryTypeProperty() {
+        return ResponseEntity.ok(new BaseResponseData(200, "Success", typePropertyService.findAllTypePropertyAndCategoryTypeProperty()));
     }
 
 }

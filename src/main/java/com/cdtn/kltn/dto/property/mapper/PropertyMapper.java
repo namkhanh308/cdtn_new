@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Component
 public class PropertyMapper {
-    public Property createProperty(CreatePropertyDTO createPropertyDTO, String codeProperty){
+    public Property createProperty(CreatePropertyDTO createPropertyDTO, String codeProperty) {
         return Property.builder()
                 .codeTypeProperty(createPropertyDTO.getCodeTypeProperty())
                 .codeCateTypePropertyCategory(createPropertyDTO.getCodeCateTypePropertyCategory())
@@ -26,7 +26,7 @@ public class PropertyMapper {
                 .build();
     }
 
-    public void updateProperty(CreatePropertyDTO createPropertyDTO, Property property){
+    public void updateProperty(CreatePropertyDTO createPropertyDTO, Property property) {
         property.setNameProperty(createPropertyDTO.getNameProperty());
         property.setProvinceCode(createPropertyDTO.getProvinceCode());
         property.setDistrictCode(createPropertyDTO.getDistrictCode());
@@ -34,27 +34,28 @@ public class PropertyMapper {
         property.setDateChange(LocalDateTime.now());
         property.setStatusProperty(Enums.StatusProperty.DACHINHSUA.getCode());
     }
-    public CreatePropertyDTO setDataPropertyDetailDTO(PropertyDetailDataRespone propertyDetailDataRespone){
+
+    public CreatePropertyDTO setDataPropertyDetailDTO(PropertyDetailDataRespone propertyDetailDataRespone) {
         return CreatePropertyDTO.builder()
-                    .codeProperty(propertyDetailDataRespone.getCodeProperty())
-                    .codeTypeProperty(propertyDetailDataRespone.getCodeTypeProperty())
-                    .codeCateTypePropertyCategory(propertyDetailDataRespone.getCodeCateTypePropertyCategory())
-                    .nameProperty(propertyDetailDataRespone.getNameProperty())
-                    .provinceCode(propertyDetailDataRespone.getProvinceCode())
-                    .districtCode(propertyDetailDataRespone.getDistrictCode())
-                    .wardsCode(propertyDetailDataRespone.getWardsCode())
-                    .codeClient(propertyDetailDataRespone.getCodeClient())
-                    .areaUse(propertyDetailDataRespone.getAreaUse())
-                    .usableArea(propertyDetailDataRespone.getUsableArea())
-                    .landArea(propertyDetailDataRespone.getLandArea())
-                    .bedCount(propertyDetailDataRespone.getBedCount())
-                    .livingCount(propertyDetailDataRespone.getLivingCount())
-                    .kitchenCount(propertyDetailDataRespone.getKitchenCount())
-                    .law(propertyDetailDataRespone.getLaw())
-                    .priceBuy(propertyDetailDataRespone.getPriceBuy())
-                    .priceLoan(propertyDetailDataRespone.getPriceLoan())
-                    .introduces(propertyDetailDataRespone.getIntroduces())
-                    .location(propertyDetailDataRespone.getLocation())
+                .codeProperty(propertyDetailDataRespone.getCodeProperty())
+                .codeTypeProperty(propertyDetailDataRespone.getCodeTypeProperty())
+                .codeCateTypePropertyCategory(propertyDetailDataRespone.getCodeCateTypePropertyCategory())
+                .nameProperty(propertyDetailDataRespone.getNameProperty())
+                .provinceCode(propertyDetailDataRespone.getProvinceCode())
+                .districtCode(propertyDetailDataRespone.getDistrictCode())
+                .wardsCode(propertyDetailDataRespone.getWardsCode())
+                .codeClient(propertyDetailDataRespone.getCodeClient())
+                .areaUse(propertyDetailDataRespone.getAreaUse())
+                .usableArea(propertyDetailDataRespone.getUsableArea())
+                .landArea(propertyDetailDataRespone.getLandArea())
+                .bedCount(propertyDetailDataRespone.getBedCount())
+                .livingCount(propertyDetailDataRespone.getLivingCount())
+                .kitchenCount(propertyDetailDataRespone.getKitchenCount())
+                .law(propertyDetailDataRespone.getLaw())
+                .priceBuy(propertyDetailDataRespone.getPriceBuy())
+                .priceLoan(propertyDetailDataRespone.getPriceLoan())
+                .introduces(propertyDetailDataRespone.getIntroduces())
+                .location(propertyDetailDataRespone.getLocation())
                 .build();
     }
 }

@@ -42,7 +42,7 @@ public class ProvinceService {
 
         for (Province province : provinceList) {
             List<Districs> districtListItem = mapDistrictByProvinceCode.getOrDefault(province.getProvinceCode(), null);
-            if(Objects.nonNull(districtListItem)){
+            if (Objects.nonNull(districtListItem)) {
                 districtListItem.add(0, Districs.builder().districtCode(null).districtName("Tất cả").provinceCode(province.getProvinceCode()).build());
             }
             province.setDistricsList(districtListItem);

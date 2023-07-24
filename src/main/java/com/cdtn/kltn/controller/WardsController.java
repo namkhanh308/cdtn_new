@@ -17,7 +17,7 @@ public class WardsController {
     private final WardsService wardsService;
 
     @RequestMapping("/findAllByDistrictCode")
-    public ResponseEntity<BaseResponseData> findAllByDistrictCode(@RequestParam String districtsCode){
+    public ResponseEntity<BaseResponseData> findAllByDistrictCode(@RequestParam String districtsCode) {
         return ResponseEntity.ok(wardsService.findAllByDistrictCode(districtsCode));
     }
 

@@ -156,7 +156,7 @@ public class NewsController {
                                                               @RequestParam Long year,
                                                               @RequestParam String codeCategoryTypeProperty) {
         try {
-            List<?> news = newsService.statisticsByPrice(provinceCode,month,year,codeCategoryTypeProperty);
+            List<?> news = newsService.statisticsByPrice(provinceCode, month, year, codeCategoryTypeProperty);
             return ResponseEntity.ok(new BaseResponseData(200, "Thống kê theo giá hiển thị thành công", news));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));
@@ -165,11 +165,11 @@ public class NewsController {
 
     @GetMapping("/statisticsByDistrict")
     public ResponseEntity<BaseResponseData> StatisticsByDistrict(@RequestParam String provinceCode,
-                                                              @RequestParam Long month,
-                                                              @RequestParam Long year,
-                                                              @RequestParam String codeCategoryTypeProperty) {
+                                                                 @RequestParam Long month,
+                                                                 @RequestParam Long year,
+                                                                 @RequestParam String codeCategoryTypeProperty) {
         try {
-            List<?> news = newsService.statisticsByDistrict(provinceCode,month,year,codeCategoryTypeProperty);
+            List<?> news = newsService.statisticsByDistrict(provinceCode, month, year, codeCategoryTypeProperty);
             return ResponseEntity.ok(new BaseResponseData(200, "Thống kê theo quận/ huyện hiển thị thành công", news));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponseData(500, e.getMessage(), null));

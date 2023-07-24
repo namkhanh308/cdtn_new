@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface PropertyInfoRepository extends JpaRepository<PropertyInfo,Long> {
+public interface PropertyInfoRepository extends JpaRepository<PropertyInfo, Long> {
     Optional<PropertyInfo> findByCodeProperty(String codeProperty);
 }

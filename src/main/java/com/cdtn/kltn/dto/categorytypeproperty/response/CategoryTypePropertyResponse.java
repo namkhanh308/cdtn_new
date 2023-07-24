@@ -1,4 +1,4 @@
-package com.cdtn.kltn.dto.CategoryTypeProperty.response;
+package com.cdtn.kltn.dto.categorytypeproperty.response;
 
 import com.cdtn.kltn.entity.TypeProperty;
 import lombok.AllArgsConstructor;

@@ -2,8 +2,8 @@ package com.cdtn.kltn.service;
 
 import com.cdtn.kltn.common.Enums;
 import com.cdtn.kltn.common.StreamUtil;
-import com.cdtn.kltn.dto.CategoryTypeProperty.response.CategoryTypePropertyResponse;
 import com.cdtn.kltn.dto.base.response.BaseResponseData;
+import com.cdtn.kltn.dto.categorytypeproperty.response.CategoryTypePropertyResponse;
 import com.cdtn.kltn.entity.TypeProperty;
 import com.cdtn.kltn.repository.typeproperty.TypePropertyRepository;
 import lombok.RequiredArgsConstructor;
